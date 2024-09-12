@@ -11,19 +11,27 @@ import java.util.Optional;
  *
  */
 final public class Book implements Serializable {
-	
 	private static final long serialVersionUID = 6110690276685962829L;
 	private BookCopy[] copies;
 	private List<Author> authors;
 	private String isbn;
 	private String title;
 	private int maxCheckoutLength;
-	public Book(String isbn, String title, int maxCheckoutLength, List<Author> authors) {
+	
+	public Book(String isbn, String title, int maxCheckoutLength, List<Author> authors, Integer numberOfCopies) {
+		if (numberOfCopies <= 0)
+			numberOfCopies = 1;
+
 		this.isbn = isbn;
 		this.title = title;
 		this.maxCheckoutLength = maxCheckoutLength;
 		this.authors = Collections.unmodifiableList(authors);
-		copies = new BookCopy[]{new BookCopy(this, 1, true)};	
+
+		List<BookCopy> bookCopies = new ArrayList<>();
+		for (int index = 1; index <= numberOfCopies; index++) {
+			bookCopies.add(new BookCopy(this, index, true));
+		}
+		copies = bookCopies.toArray(new BookCopy[0]);
 	}
 	
 	public void updateCopies(BookCopy copy) {

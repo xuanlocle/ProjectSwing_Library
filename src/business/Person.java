@@ -38,4 +38,30 @@ public class Person implements Serializable {
 	public void setAddress(Address address) {
 		this.address = address;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+
+		if (obj.getClass() != this.getClass()) {
+			return false;
+		}
+
+		final Person other = (Person) obj;
+		if (!other.getFirstName().equals(this.getFirstName())) {
+			return false;
+		}
+		if (!other.getLastName().equals(this.getLastName())) {
+			return false;
+		}
+		if (!other.getTelephone().equals(this.getTelephone())) {
+			return false;
+		}
+		if (!other.getAddress().equals(this.getAddress())) {
+			return false;
+		}
+		return true;
+	}
 }

@@ -1,36 +1,45 @@
 package dataaccess;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
+import business.Author;
 import business.Book;
-import business.BookCopy;
 import business.LibraryMember;
-import dataaccess.DataAccessFacade.StorageType;
 
 
 public class DataAccessFacade implements DataAccess {
-	
+	private boolean isTest = false;
 	enum StorageType {
-		BOOKS, MEMBERS, USERS;
+		BOOKS, MEMBERS, USERS, AUTHOR;
 	}
-	// Windows user can use
-	
-	/*public static final String OUTPUT_DIR = System.getProperty("user.dir") 
-			+ "\\src\\dataaccess\\storage";*/
-	
-	// For Mac Users path can use / 
-	public static final String OUTPUT_DIR = System.getProperty("user.dir") 
-			+ "/src/dataaccess/storage";
-	
-	public static final String DATE_PATTERN = "MM/dd/yyyy";
-	
+
+	private static String OUTPUT_DIR = System.getProperty("user.dir") + "/src/dataaccess/storage";
+
+	public DataAccessFacade() {
+
+	}
+
+	public DataAccessFacade(boolean isTest) {
+		if (isTest) {
+			this.isTest = true;
+			OUTPUT_DIR = System.getProperty("user.dir") + "/src/dataaccess/test_storage";
+		}
+	}
+
+	@Override
+	public void cleanUpTestStorage() {
+		if (isTest) {
+			Arrays.stream(Objects.requireNonNull(new File(OUTPUT_DIR).listFiles())).forEach(File::delete);
+			new File(OUTPUT_DIR).delete();
+		}
+	}
+
 	//implement: other save operations
 	public void saveNewMember(LibraryMember member) {
 		HashMap<String, LibraryMember> mems = readMemberMap();
@@ -38,7 +47,43 @@ public class DataAccessFacade implements DataAccess {
 		mems.put(memberId, member);
 		saveToStorage(StorageType.MEMBERS, mems);	
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public HashMap<String, Author> getAuthors() {
+		return (HashMap<String, Author>) readFromStorage(StorageType.AUTHOR);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void saveAuthor(Author author) {
+		HashMap<String, Author> authors = (HashMap<String, Author>) readFromStorage(StorageType.AUTHOR);
+		if (Objects.isNull(authors)) {
+			authors = new HashMap<>();
+		}
+
+		authors.put(author.getFirstName() + author.getLastName(), author);
+		saveToStorage(StorageType.AUTHOR, authors);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public HashMap<String, Book> getBooks() {
+		return (HashMap<String, Book>) readFromStorage(StorageType.BOOKS);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void saveBook(Book book) {
+		HashMap<String, Book> books = (HashMap<String, Book>) readFromStorage(StorageType.BOOKS);
+		if (Objects.isNull(books)) {
+			books = new HashMap<>();
+		}
+
+		books.put(book.getIsbn(), book);
+		saveToStorage(StorageType.BOOKS, books);
+	}
+
 	@SuppressWarnings("unchecked")
 	public  HashMap<String,Book> readBooksMap() {
 		//Returns a Map with name/value pairs being
@@ -83,11 +128,21 @@ public class DataAccessFacade implements DataAccess {
 		memberList.forEach(member -> members.put(member.getMemberId(), member));
 		saveToStorage(StorageType.MEMBERS, members);
 	}
+
+	static void createFileIfNotExist(String fileName) {
+		try {
+			Files.createDirectories(FileSystems.getDefault().getPath(OUTPUT_DIR));
+			Files.createFile(FileSystems.getDefault().getPath(OUTPUT_DIR, fileName));
+		} catch(IOException e) {
+		}
+	}
 	
 	static void saveToStorage(StorageType type, Object ob) {
 		ObjectOutputStream out = null;
 		try {
 			Path path = FileSystems.getDefault().getPath(OUTPUT_DIR, type.toString());
+			createFileIfNotExist(type.toString());
+
 			out = new ObjectOutputStream(Files.newOutputStream(path));
 			out.writeObject(ob);
 		} catch(IOException e) {
@@ -106,8 +161,12 @@ public class DataAccessFacade implements DataAccess {
 		Object retVal = null;
 		try {
 			Path path = FileSystems.getDefault().getPath(OUTPUT_DIR, type.toString());
+			createFileIfNotExist(type.toString());
+
 			in = new ObjectInputStream(Files.newInputStream(path));
 			retVal = in.readObject();
+		} catch(EOFException e) {
+			System.out.println("EOF error");
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {

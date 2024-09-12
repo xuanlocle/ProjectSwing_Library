@@ -34,4 +34,30 @@ final public class Address implements Serializable {
 		return "(" + street + ", " + city + ", " + zip + ")";
 		
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+
+		if (obj.getClass() != this.getClass()) {
+			return false;
+		}
+
+		final Address other = (Address) obj;
+		if (!other.getStreet().equals(this.getStreet())) {
+			return false;
+		}
+		if (!other.getCity().equals(this.getCity())) {
+			return false;
+		}
+		if (!other.getState().equals(this.getState())) {
+			return false;
+		}
+		if (!other.getZip().equals(this.getZip())) {
+			return false;
+		}
+		return true;
+	}
 }
