@@ -1,4 +1,9 @@
 package librarysystem.main;
+import business.ControllerInterface;
+import business.SystemController;
+import dataaccess.DataAccess;
+import dataaccess.DataAccessFacade;
+import librarysystem.BookMgmtView;
 import librarysystem.checkout.CheckoutPanel;
 
 import javax.swing.*;
@@ -23,6 +28,15 @@ public class ContentPanel extends JPanel {
         add(checkoutPanel, "Checkout");
         add(memberPanel, "Member");
         add(helpPanel, "Help");
+        initBookPage();
+    }
+
+    private void initBookPage() {
+        DataAccess dataAccess = new DataAccessFacade();
+        ControllerInterface controller = new SystemController(dataAccess);
+
+        BookMgmtView bookPanel = new BookMgmtView(controller);
+        add(bookPanel, "ManageBook");
     }
 
     // Method to switch to the requested panel
@@ -42,10 +56,7 @@ public class ContentPanel extends JPanel {
 
     // Helper method to create a simple panel with a label
     private JPanel createPanel(JPanel panel) {
-//        panel.setBackground(backgroundColor);
         panel.setLayout(new BorderLayout());
-//        JLabel label = new JLabel(, SwingConstants.CENTER);
-//        panel.add(label, BorderLayout.CENTER);
         return panel;
     }
 }

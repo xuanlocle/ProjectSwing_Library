@@ -1,13 +1,12 @@
 package librarysystem;
-import business.ControllerInterface;
-import business.SystemController;
-import dataaccess.DataAccess;
-import dataaccess.DataAccessFacade;
 
 import librarysystem.main.MainScreen;
+
+import javax.swing.*;
 import java.awt.Component;
-import java.awt.EventQueue;
 import java.awt.Toolkit;
+
+import static librarysystem.Util.getResourceDir;
 
 public class Main {
 
@@ -25,7 +24,10 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        setWindowsStyle();
+
         MainScreen frame = new MainScreen();
+        frame.setIconImage(new ImageIcon(getResourceDir() + "/image/book.png").getImage());
         frame.setVisible(true);
         centerFrameOnDesktop(frame);
     }

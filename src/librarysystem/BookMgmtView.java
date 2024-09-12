@@ -6,17 +6,19 @@ import business.ControllerInterface;
 import librarysystem.common.ComboItem;
 import librarysystem.common.ISBNWithHyphenDocumentFilter;
 import librarysystem.common.NumericDocumentFilter;
+import librarysystem.main.TableButtonRender;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static librarysystem.Util.isFieldValid;
 import static librarysystem.Util.isValidISBN;
 
-public class BookMgmtView extends JFrame implements IAuthorHolderView {
+public class BookMgmtView extends JPanel implements IAuthorHolderView {
     ControllerInterface controller;
 
     private JPanel mainPanel;
@@ -33,17 +35,12 @@ public class BookMgmtView extends JFrame implements IAuthorHolderView {
 
     private List<ComboItem> comboItems = List.of(new ComboItem("21 days", 21), new ComboItem("7 days", 7));
     private String[] authorColumns = {"First Name", "Last Name", "Short Bio"};
-    private String[] bookColumns = {"ISBN", "Title", "Author", "Rule", "Copies", "Availability"};
+    private String[] bookColumns = {"Add Copy", "ISBN", "Title", "Author", "Rule", "Copies", "Availability"};
     private List<Author> authors = new ArrayList<>();
     private List<Book> books = new ArrayList<>();
 
     public BookMgmtView(ControllerInterface controller) {
         this.controller = controller;
-
-        setTitle("Book Management");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setContentPane(mainPanel);
-        pack();
 
         ((AbstractDocument) txtISBN.getDocument()).setDocumentFilter(new ISBNWithHyphenDocumentFilter());
         ((AbstractDocument) txtCopies.getDocument()).setDocumentFilter(new NumericDocumentFilter(5));
@@ -51,7 +48,25 @@ public class BookMgmtView extends JFrame implements IAuthorHolderView {
         initButton();
         initRuleCombo();
         initTableAuthor();
+        refreshBookTable();
 
+        tableBook.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = tableBook.rowAtPoint(evt.getPoint());
+                int col = tableBook.columnAtPoint(evt.getPoint());
+                if (col == 0) {
+                    addBookCopy(row);
+                    refreshBookTable();
+                }
+            }
+        });
+
+        mainPanel.setPreferredSize(new Dimension(800, 600));
+        add(mainPanel);
+    }
+
+    private void refreshBookTable() {
         getBook();
         initTableBook();
     }
@@ -86,6 +101,7 @@ public class BookMgmtView extends JFrame implements IAuthorHolderView {
             model.addRow(row);
         }
         tableBook.setModel(model);
+        tableBook.getColumn("Add Copy").setCellRenderer(new TableButtonRender());
     }
 
     private static Object[] getRow(Book book) {
@@ -94,6 +110,7 @@ public class BookMgmtView extends JFrame implements IAuthorHolderView {
         String rule = book.getMaxCheckoutLength() + " days";
         String available = book.getNumCopies() > 0 ? "Available" : "Occupied";
         return new Object[] {
+                "Add Copy",
                 book.getIsbn(),
                 book.getTitle(),
                 authorFullName,
@@ -150,14 +167,17 @@ public class BookMgmtView extends JFrame implements IAuthorHolderView {
         controller.saveBook(book);
     }
 
+    private void addBookCopy(int index) {
+        controller.addACopy(books.get(index));
+    }
+
     private void addBtnPressed() {
         if (!validateBook())
             return;
 
         saveBook();
         resetBtnPressed();
-        getBook();
-        initTableBook();
+        refreshBookTable();
     }
 
     private void resetBtnPressed() {

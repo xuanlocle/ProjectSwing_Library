@@ -65,4 +65,30 @@ class BookMgmtTest {
         assertEquals(1, books.size());
         assertEquals(book2, books.get(0));
     }
+
+    @Test()
+    public void addCopySuccess() {
+        List<Author> authors = generateAuthors(2);
+
+        Book book1 = new Book("978-0-596-52068-1", "Book", 7, authors, 1);
+        Book book2 = new Book("978-0-596-52068-2", "Book", 7, authors, 1);
+        controller.saveBook(book1);
+        controller.saveBook(book2);
+
+        List<Book> books = controller.getBooks();
+        assertEquals(2, books.size());
+        assertEquals(book1, books.get(1));
+        assertEquals(book2, books.get(0));
+        assertEquals(1, book1.getNumCopies());
+        assertEquals(1, book2.getNumCopies());
+
+        controller.addACopy(book1);
+        books = controller.getBooks();
+        assertEquals(2, books.size());
+        assertEquals(book1, books.get(1));
+        assertEquals(book2, books.get(0));
+        assertEquals(2, books.get(1).getNumCopies());
+        assertEquals(1, books.get(0).getNumCopies());
+
+    }
 }

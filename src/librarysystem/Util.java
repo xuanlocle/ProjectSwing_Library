@@ -91,5 +91,13 @@ public class Util {
 		Matcher matcher = pattern.matcher(isbn);
 		return matcher.matches();
 	}
+
+	public static String getRootDir() {
+		return System.getProperty("user.dir");
+	}
+
+	public static String getResourceDir() {
+		return getRootDir() + "/src/resource";
+	}
 }
 

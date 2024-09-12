@@ -63,9 +63,7 @@ public class SystemController implements ControllerInterface {
 		dataAccess.saveAuthor(author);
 	}
 
-	@Override
-	public List<Book> getBooks() {
-		HashMap<String, Book> books = dataAccess.getBooks();
+	private List<Book> convertBookToList(HashMap<String, Book> books) {
 		if (Objects.isNull(books)) {
 			return List.of();
 		}
@@ -73,7 +71,18 @@ public class SystemController implements ControllerInterface {
 	}
 
 	@Override
+	public List<Book> getBooks() {
+		HashMap<String, Book> books = dataAccess.getBooks();
+		return convertBookToList(books);
+	}
+
+	@Override
 	public void saveBook(Book book) {
 		dataAccess.saveBook(book);
+	}
+
+	@Override
+	public void addACopy(Book book) {
+		dataAccess.addACopy(book);
 	}
 }

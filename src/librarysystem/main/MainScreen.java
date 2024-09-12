@@ -12,7 +12,7 @@ public class MainScreen extends JFrame {
     public MainScreen() {
         setTitle("Split Panel Example");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setSize(1024, 700);
         menuPanel = new MenuPanel();
 
         rightPanel = new ContentPanel();
@@ -23,7 +23,7 @@ public class MainScreen extends JFrame {
         splitPane.setResizeWeight(0.25); // Left panel resizes less
 
         menuPanel.initListener(rightPanel);
-        this.add(splitPane);
-        this.setVisible(true);
+        add(splitPane);
+        setVisible(true);
     }
 }

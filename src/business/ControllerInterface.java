@@ -12,4 +12,5 @@ public interface ControllerInterface {
 
 	List<Book> getBooks();
 	void saveBook(Book book);
+	void addACopy(Book book);
 }
