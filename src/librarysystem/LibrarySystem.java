@@ -30,7 +30,6 @@ public class LibrarySystem extends JFrame implements LibWindow {
     private boolean isInitialized = false;
     
     private static LibWindow[] allWindows = { 
-    	LibrarySystem.INSTANCE,
 		LoginWindow.INSTANCE,
 		AllMemberIdsWindow.INSTANCE,	
 		AllBookIdsWindow.INSTANCE
