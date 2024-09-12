@@ -17,6 +17,7 @@ public interface DataAccess {
 
 	HashMap<String, Book> getBooks();
 	void saveBook(Book book);
+	void addACopy(Book book);
 
 	void cleanUpTestStorage();
 }
