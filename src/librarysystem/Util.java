@@ -7,8 +7,12 @@ import java.awt.Toolkit;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import javax.swing.JLabel;
+import javax.swing.*;
+import javax.swing.text.JTextComponent;
 
 public class Util {
 	public static final Color DARK_BLUE = Color.BLUE.darker();
@@ -17,7 +21,10 @@ public class Util {
 	public static final Color LINK_AVAILABLE = DARK_BLUE;
 	public static final Color LINK_NOT_AVAILABLE = Color.gray;
 	//rgb(18, 75, 14)
-	
+
+	// Regex for ISBN-10 or ISBN-13
+	private static final String REGEX = "^(?:ISBN(?:-13)?:? )?(?=[0-9]{13}$|(?=(?:[0-9]+[- ]){4})[- 0-9]{17}$)97[89][- ]?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9]$";
+
 	public static Font makeSmallFont(Font f) {
         return new Font(f.getName(), f.getStyle(), (f.getSize()-2));
     }
@@ -63,6 +70,7 @@ public class Util {
 			return false;
 		}
 	}
+
 	public static void centerFrameOnDesktop(Component f) {
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		int height = toolkit.getScreenSize().height;
@@ -71,4 +79,17 @@ public class Util {
 		int frameWidth = f.getSize().width;
 		f.setLocation(((width - frameWidth) / 2), (height - frameHeight) / 3);
 	}
+
+	public static boolean isFieldValid(JTextComponent txtField) {
+		if (Objects.isNull(txtField))
+			return false;
+        return !txtField.getText().isEmpty() && !txtField.getText().isBlank();
+    }
+
+	public static boolean isValidISBN(String isbn) {
+		Pattern pattern = Pattern.compile(REGEX);
+		Matcher matcher = pattern.matcher(isbn);
+		return matcher.matches();
+	}
 }
+
