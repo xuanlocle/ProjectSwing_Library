@@ -23,12 +23,41 @@ public class MenuPanel extends JPanel implements IAuthStateListener {
         btnCheckout = new JButton("Checkout");
         btnMember = new JButton("Member");
 
-        this.add(btnLogin);
-        this.add(btnBook);
-        this.add(btnCheckout);
-        this.add(btnMember);
+        initMenu();
+//        this.add(btnLogin);
+//        this.add(btnBook);
+//        this.add(btnCheckout);
+//        this.add(btnMember);
 
         SystemController.registerAuthStateListener(this);
+    }
+
+    private void initMenu() {
+        //default not login
+        this.add(btnLogin);
+    }
+
+    private void updateMenu(Auth auth) {
+        //by role
+        if (auth == null) {
+            this.removeAll();
+            this.add(btnLogin);
+            return;
+        }
+        switch (auth) {
+            case LIBRARIAN:
+                this.add(btnCheckout);
+                break;
+            case ADMIN:
+                this.add(btnBook);
+                this.add(btnMember);
+                break;
+            case BOTH:
+                this.add(btnBook);
+                this.add(btnCheckout);
+                this.add(btnMember);
+                break;
+        }
     }
 
     public void initListener(ContentPanel rightPanel) {
@@ -46,6 +75,7 @@ public class MenuPanel extends JPanel implements IAuthStateListener {
         this.remove(btnLogin);
         this.add(btnHome, 0);
         btnHome.doClick();
+        updateMenu(auth);
         this.updateUI();
     }
 
@@ -54,6 +84,7 @@ public class MenuPanel extends JPanel implements IAuthStateListener {
         this.remove(btnHome);
         this.add(btnLogin, 0);
         btnLogin.doClick();
+        updateMenu(null);
         this.updateUI();
     }
 }
