@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 
-public class CheckoutPanelForm extends JPanel implements ICheckoutView {
+public class CheckoutPanelForm implements ICheckoutView {
     private ICheckoutPresenter mPresenter;
 
     private JTable table1;
@@ -21,7 +21,6 @@ public class CheckoutPanelForm extends JPanel implements ICheckoutView {
 
     public CheckoutPanelForm() {
         mPresenter = new CheckoutPresenter(this);
-        add(checkoutPanel);
 
         // Create a table with 4 columns
         initTable();
@@ -33,6 +32,10 @@ public class CheckoutPanelForm extends JPanel implements ICheckoutView {
             }
         });
         mPresenter.fetchData();
+    }
+
+    public JPanel getPanel() {
+        return checkoutPanel;
     }
 
     private void initTable() {
@@ -49,12 +52,12 @@ public class CheckoutPanelForm extends JPanel implements ICheckoutView {
 
     @Override
     public void showErrorDialog(String text) {
-        JOptionPane.showMessageDialog(this, text, "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(checkoutPanel, text, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     @Override
     public void showSuccessDialog(String text) {
-        JOptionPane.showMessageDialog(this, text, "Success", JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(checkoutPanel, text, "Success", JOptionPane.PLAIN_MESSAGE);
     }
 
     @Override
