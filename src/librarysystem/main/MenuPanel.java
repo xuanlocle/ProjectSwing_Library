@@ -13,23 +13,20 @@ public class MenuPanel extends JPanel implements IAuthStateListener {
     private JButton btnBook;
     private JButton btnCheckout;
     private JButton btnMember;
-    private JButton btnHelp;
 
     public MenuPanel() {
-        this.setLayout(new GridLayout(5, 1)); // 5 buttons in a column layout
+        this.setLayout(new GridLayout(4, 1)); // 5 buttons in a column layout
 
         btnLogin = new JButton("Login");
         btnHome = new JButton("Home");
         btnBook = new JButton("Manage Book");
         btnCheckout = new JButton("Checkout");
         btnMember = new JButton("Member");
-        btnHelp = new JButton("Help");
 
         this.add(btnLogin);
         this.add(btnBook);
         this.add(btnCheckout);
         this.add(btnMember);
-        this.add(btnHelp);
 
         SystemController.registerAuthStateListener(this);
     }
@@ -41,7 +38,6 @@ public class MenuPanel extends JPanel implements IAuthStateListener {
         btnBook.addActionListener(e -> rightPanel.showPanel("ManageBook"));
         btnCheckout.addActionListener(e -> rightPanel.showPanel("Checkout"));
         btnMember.addActionListener(e -> rightPanel.showPanel("Member"));
-        btnHelp.addActionListener(e -> rightPanel.showPanel("Help"));
 
     }
 

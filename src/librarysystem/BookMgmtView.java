@@ -108,7 +108,7 @@ public class BookMgmtView extends JPanel implements IAuthorHolderView {
         Author author = book.getAuthors().get(0);
         String authorFullName = author.getFirstName() + ", " + author.getLastName();
         String rule = book.getMaxCheckoutLength() + " days";
-        String available = book.getNumCopies() > 0 ? "Available" : "Occupied";
+        String available = book.isAvailable() ? "Available" : "Occupied";
         return new Object[] {
                 "Add Copy",
                 book.getIsbn(),
@@ -208,5 +208,9 @@ public class BookMgmtView extends JPanel implements IAuthorHolderView {
     public void setAuthors(List<Author> authors) {
         this.authors = authors;
         this.initTableAuthor();
+    }
+
+    public void reload() {
+        refreshBookTable();
     }
 }

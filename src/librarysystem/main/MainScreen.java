@@ -10,7 +10,7 @@ public class MainScreen extends JFrame {
 
 
     public MainScreen() {
-        setTitle("Split Panel Example");
+        setTitle("Library System");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1024, 700);
         menuPanel = new MenuPanel();

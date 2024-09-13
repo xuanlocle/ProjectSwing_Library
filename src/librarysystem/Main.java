@@ -1,7 +1,9 @@
 package librarysystem;
 
+import business.ControllerInterface;
 import business.SystemController;
 import dataaccess.DataAccess;
+import dataaccess.DataAccessFacade;
 import librarysystem.main.MainScreen;
 
 import javax.swing.*;
@@ -11,6 +13,8 @@ import java.awt.Toolkit;
 import static librarysystem.Util.getResourceDir;
 
 public class Main {
+    public static final DataAccess dataAccess = new DataAccessFacade();
+    public static final ControllerInterface controller = new SystemController(dataAccess);
 
     private static void setWindowsStyle() {
         try {
