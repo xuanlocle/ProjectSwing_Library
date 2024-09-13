@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.awt.Component;
 import java.awt.Toolkit;
 
-import static librarysystem.Util.getResourceDir;
+import static util.ValidationHelper.getResourceDir;
 
 public class Main {
     public static final DataAccess dataAccess = new DataAccessFacade();

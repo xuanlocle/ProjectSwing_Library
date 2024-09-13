@@ -11,14 +11,13 @@ import librarysystem.main.TableButtonRender;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AbstractDocument;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static librarysystem.Util.isFieldValid;
-import static librarysystem.Util.isValidISBN;
+import static util.Util.isFieldValid;
+import static util.ValidationHelper.isValidISBN;
 
-public class BookMgmtView extends JPanel implements IAuthorHolderView {
+public class BookMgmtView  implements IAuthorHolderView {
     ControllerInterface controller;
 
     private JPanel mainPanel;
@@ -61,9 +60,6 @@ public class BookMgmtView extends JPanel implements IAuthorHolderView {
                 }
             }
         });
-
-        mainPanel.setPreferredSize(new Dimension(800, 600));
-        add(mainPanel);
     }
 
     private void refreshBookTable() {
@@ -131,22 +127,22 @@ public class BookMgmtView extends JPanel implements IAuthorHolderView {
 
     private boolean validateBook() {
         if (!isValidISBN(txtISBN.getText())) {
-            JOptionPane.showMessageDialog(this, "ISBN is mandatory (Ex. 978-0-596-52068-7)");
+            JOptionPane.showMessageDialog(mainPanel, "ISBN is mandatory (Ex. 978-0-596-52068-7)");
             return false;
         }
 
-        if (!isFieldValid(txtTitle)){
-            JOptionPane.showMessageDialog(this, "Title is mandatory");
+        if (!isFieldValid(txtTitle)) {
+            JOptionPane.showMessageDialog(mainPanel, "Title is mandatory");
             return false;
         }
 
-        if (!isFieldValid(txtCopies)){
-            JOptionPane.showMessageDialog(this, "Copies is mandatory");
+        if (!isFieldValid(txtCopies)) {
+            JOptionPane.showMessageDialog(mainPanel, "Copies is mandatory");
             return false;
         }
 
-        if (authors.isEmpty()){
-            JOptionPane.showMessageDialog(this, "Author is mandatory");
+        if (authors.isEmpty()) {
+            JOptionPane.showMessageDialog(mainPanel, "Author is mandatory");
             return false;
         }
 
@@ -168,7 +164,7 @@ public class BookMgmtView extends JPanel implements IAuthorHolderView {
         boolean isSaved = controller.saveBook(book);
         if (!isSaved) {
             JOptionPane.showMessageDialog(
-                    this, "Cannot save book. Please check ISBN", "Error", JOptionPane.ERROR_MESSAGE);
+                    mainPanel, "Cannot save book. Please check ISBN", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;
@@ -212,5 +208,9 @@ public class BookMgmtView extends JPanel implements IAuthorHolderView {
 
     public void reload() {
         refreshBookTable();
+    }
+
+    public JPanel getMainPanel(){
+        return mainPanel;
     }
 }
