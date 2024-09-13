@@ -87,7 +87,11 @@ public class DataAccessFacade implements DataAccess {
 	@SuppressWarnings("unchecked")
 	@Override
 	public HashMap<String, Author> getAuthors() {
-		return (HashMap<String, Author>) readFromStorage(StorageType.AUTHOR);
+		HashMap<String, Author> authors = (HashMap<String, Author>) readFromStorage(StorageType.AUTHOR);
+		if (Objects.isNull(authors)) {
+			authors = new HashMap<>();
+		}
+		return authors;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -105,7 +109,11 @@ public class DataAccessFacade implements DataAccess {
 	@SuppressWarnings("unchecked")
 	@Override
 	public HashMap<String, Book> getBooks() {
-		return (HashMap<String, Book>) readFromStorage(StorageType.BOOKS);
+		HashMap<String, Book> books = (HashMap<String, Book>) readFromStorage(StorageType.BOOKS);
+		if (Objects.isNull(books)) {
+			books = new HashMap<>();
+		}
+		return books;
 	}
 
 	@SuppressWarnings("unchecked")
