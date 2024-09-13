@@ -199,21 +199,21 @@ public class DataAccessFacade implements DataAccess {
 	}
 
 	@Override
-	public boolean isCheckoutAvailable(String memberId, String isbn) {
+	public boolean isCheckoutAvailable(String memberId, String isbn) throws CheckoutException {
 		HashMap<String, LibraryMember> mems = readMemberMap();
 		if (!mems.containsKey(memberId)) {
 			//not exists memberId
-			return false;
+			throw new CheckoutException("Not existing member " + memberId);
 		}
 		HashMap<String, Book> books = readBooksMap();
 		if (!books.containsKey(isbn)) {
 			//not exists isbn
-			return false;
+			throw new CheckoutException("Not existing book with isbn " + isbn);
 		}
 		Book bookNeedCheckout = books.get(isbn);
 		if (!bookNeedCheckout.isAvailable()) {
 			//none of the copies of book are avaialble
-			return false;
+			throw new CheckoutException("This book is not available!");
 		}
 		return true;
 	}

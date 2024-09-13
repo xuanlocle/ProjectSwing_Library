@@ -1,11 +1,8 @@
-package librarysystem.checkout;
-
-import business.CheckoutEntry;
+package business;
 
 import java.util.HashMap;
 
 public interface ICheckoutView {
-
     void showErrorDialog(String text);
     void showSuccessDialog(String text);
 
