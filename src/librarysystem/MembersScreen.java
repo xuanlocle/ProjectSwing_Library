@@ -1,7 +1,6 @@
 package librarysystem;
 
-import business.ControllerInterface;
-import business.LibraryMember;
+import business.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -38,7 +37,8 @@ public class MembersScreen implements IDialogEventListenter {
     }
 
     private void addLibraryMemberBtnPressed() {
-        JDialog dialog = new AddLibraryMemberDialog(this, controller);
+        IValidator validator = new Validator();
+        JDialog dialog = new AddLibraryMemberDialog(this, controller, validator);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
         initMembersTable();
@@ -57,13 +57,14 @@ public class MembersScreen implements IDialogEventListenter {
         String firstName = member.getFirstName();
         String lastName = member.getLastName();
         String phone = member.getTelephone();
-        String address = member.getAddress().toString();
+        Address address = member.getAddress();
+        String addressString = address.getStreet() + ", " + address.getCity() + ", " + address.getState() + ", " + address.getZip();
         return new Object[] {
                 memberID,
                 firstName,
                 lastName,
                 phone,
-                address
+                addressString
         };
     }
 
