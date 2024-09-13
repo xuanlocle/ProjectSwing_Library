@@ -2,16 +2,12 @@ package dataaccess;
 
 import java.util.HashMap;
 
-import business.Author;
-import business.Book;
-import business.CheckoutRecord;
-import business.LibraryMember;
+import business.*;
 
 public interface DataAccess { 
 	HashMap<String,Book> readBooksMap();
 	HashMap<String,User> readUserMap();
 	HashMap<String, LibraryMember> readMemberMap();
-	HashMap<Integer, CheckoutRecord> readCheckoutRecordMap();
 	void saveNewMember(LibraryMember member);
 
 	HashMap<String, Author> getAuthors();
@@ -25,4 +21,10 @@ public interface DataAccess {
 	void checkoutBook(String memberId, String isbn);
 
 	void cleanUpTestStorage();
+
+	HashMap<Integer, CheckoutEntry> getAllCheckoutEntries();
+	HashMap<Integer, CheckoutEntry> getCheckoutEntriesByMemberId(String memberId);
+
+	void migrationMemberRecord();
+
 }

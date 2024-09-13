@@ -1,6 +1,6 @@
 package librarysystem.checkout;
 
-import business.CheckoutRecord;
+import business.CheckoutEntry;
 
 import java.util.HashMap;
 
@@ -9,5 +9,5 @@ public interface ICheckoutView {
     void showErrorDialog(String text);
     void showSuccessDialog(String text);
 
-    void updateTable(HashMap<Integer, CheckoutRecord> cr);
+    void updateTable(String memberId, HashMap<Integer, CheckoutEntry> cr);
 }

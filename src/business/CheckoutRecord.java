@@ -1,61 +1,24 @@
 package business;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.List;
 
-final public class CheckoutRecord implements Serializable {
+public final class CheckoutRecord implements Serializable {
 
-    private static final long serialVersionUID = -1319816079467717030L;
-//     private int checkOutID;
-    private BookCopy bookCopy;
-    private LocalDate dueDate;
-    private LocalDate checkedOutDate;
-    private double fine;
-    private boolean isCheckedIn;
+    private static final long serialVersionUID = 7274497633871237909L;
+    private List<CheckoutEntry> checkoutEntries; // List of entries
 
-    public CheckoutRecord(LocalDate dueDate, BookCopy bookCopy) {
-        this.dueDate = dueDate;
-        this.bookCopy = bookCopy;
-        this.checkedOutDate = LocalDate.now();
-        this.isCheckedIn = false;
+    // Constructor
+    public CheckoutRecord(List<CheckoutEntry> checkoutEntries) {
+        this.checkoutEntries = checkoutEntries;
     }
 
-    public Object[] toRowData(){
-      return new Object[] {
-              bookCopy.getBook().getIsbn(),
-              bookCopy.getBook().getTitle(),
-              checkedOutDate,
-              dueDate,
-      };
-    };
-
-    public LocalDate getCheckedOutDate() {
-        return checkedOutDate;
+    public List<CheckoutEntry> getCheckoutEntries() {
+        return checkoutEntries;
     }
 
-    public BookCopy getBookCopy() {
-        return bookCopy;
-    }
-
-    public LocalDate getDueDate() {
-        return dueDate;
-    }
-
-    public double getFine() {
-        return fine;
-    }
-
-    public boolean getCheckInStatus() {
-        return isCheckedIn;
-    }
-
-    public BookCopy getCheckOutBook() {
-        return bookCopy;
-    }
-
-    public String toString() {
-        return bookCopy.getBook().getIsbn() + "\t\t" + bookCopy.getBook().getTitle() + "\t\t\t" + checkedOutDate + "\t\t" + dueDate + "\t\t" + bookCopy.getCopyNum() + "\n";
+    public void setCheckoutEntries(List<CheckoutEntry> checkoutEntries) {
+        this.checkoutEntries = checkoutEntries;
     }
 
 }
-

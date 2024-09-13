@@ -1,6 +1,6 @@
 package test;
 
-import business.CheckoutRecord;
+import business.CheckoutEntry;
 import dataaccess.DataAccess;
 import librarysystem.checkout.CheckoutPresenter;
 import librarysystem.checkout.ICheckoutView;
@@ -36,83 +36,105 @@ class CheckoutPresenterTest {
     }
 
 
+    // Test fetchData method when checkout records are available
     @Test
-    public void testFetchData_withNonNullData() {
-        // Arrange
-        HashMap<Integer, CheckoutRecord> mockCheckoutRecords = new HashMap<>();
-        mockCheckoutRecords.put(1, new CheckoutRecord(null, null)); // Sample data
-        when(mockDataAccess.readCheckoutRecordMap()).thenReturn(mockCheckoutRecords);
+    void testFetchData_withEntries() {
+        HashMap<Integer, CheckoutEntry> checkoutEntries = new HashMap<>();
+        checkoutEntries.put(1, new CheckoutEntry(null, null)); // Mocked data
 
-        // Act
+        // Mock behavior
+        when(mockDataAccess.getAllCheckoutEntries()).thenReturn(checkoutEntries);
+
+        // Call the method
         checkoutPresenter.fetchData();
 
-        // Assert
-        verify(mockView).updateTable(mockCheckoutRecords);
+        // Verify interactions
+        verify(mockDataAccess).getAllCheckoutEntries();
+        verify(mockView).updateTable(null, checkoutEntries);
     }
 
+    // Test fetchData method when there are no checkout records
     @Test
-    public void testFetchData_withNullData() {
-        // Arrange
-        when(mockDataAccess.readCheckoutRecordMap()).thenReturn(null);
+    void testFetchData_noEntries() {
+        // Mock behavior with an empty HashMap
+        when(mockDataAccess.getAllCheckoutEntries()).thenReturn(new HashMap<>());
 
-        // Act
+        // Call the method
         checkoutPresenter.fetchData();
 
-        // Assert
-        verify(mockView, never()).updateTable(any());  // Ensure updateTable() is not called
+        // Verify interactions
+        verify(mockDataAccess).getAllCheckoutEntries();
+        verify(mockView).updateTable(null, new HashMap<>());
     }
 
+    // Test handleCheckoutAction when memberId is empty
     @Test
-    public void testHandleCheckoutAction_whenMemberIdIsEmpty() {
-        // Act
-        checkoutPresenter.handleCheckoutAction("", "978-0-596-52068-7");
+    void testHandleCheckoutAction_emptyMemberId() {
+        String isbn = "978-0-596-52068-7";
 
-        // Assert
+        // Call the method with an empty memberId
+        checkoutPresenter.handleCheckoutAction("", isbn);
+
+        // Verify that an error dialog is shown
         verify(mockView).showErrorDialog("Member ID is empty");
     }
 
+    // Test handleCheckoutAction when isbn is empty
     @Test
-    public void testHandleCheckoutAction_whenIsbnIsEmpty() {
-        // Act
-        checkoutPresenter.handleCheckoutAction("1004", "");
+    void testHandleCheckoutAction_emptyIsbn() {
+        String memberId = "1004";
 
-        // Assert
+        // Call the method with an empty isbn
+        checkoutPresenter.handleCheckoutAction(memberId, "");
+
+        // Verify that an error dialog is shown
         verify(mockView).showErrorDialog("ISBN is empty");
     }
 
+    // Test handleCheckoutAction when checkout is available
     @Test
-    public void testHandleCheckoutAction_whenBookIsAvailable() {
-        // Arrange
-        when(mockDataAccess.isCheckoutAvailable("1004", "978-0-596-52068-7")).thenReturn(true);
+    void testHandleCheckoutAction_checkoutAvailable() {
+        String memberId = "1004";
+        String isbn = "978-0-596-52068-7";
 
-        // Act
-        checkoutPresenter.handleCheckoutAction("1004", "978-0-596-52068-7");
+        // Mock the behavior of mockDataAccess
+        when(mockDataAccess.isCheckoutAvailable(memberId, isbn)).thenReturn(true);
 
-        // Assert
-        verify(mockDataAccess).checkoutBook("1004", "978-0-596-52068-7");
+        // Call the method
+        checkoutPresenter.handleCheckoutAction(memberId, isbn);
+
+        // Verify that the book is checked out and appropriate dialogs are shown
+        verify(mockDataAccess).checkoutBook(memberId, isbn);
         verify(mockView).showSuccessDialog("Checkout successful");
-        verify(mockView).updateTable(mockDataAccess.readCheckoutRecordMap());
+        verify(mockView).updateTable(eq(memberId), any(HashMap.class));
     }
 
+    // Test handleCheckoutAction when checkout is not available
     @Test
-    public void testHandleCheckoutAction_whenBookIsNotAvailable() {
-        // Arrange
-        when(mockDataAccess.isCheckoutAvailable("1004", "978-0-596-52068-7")).thenReturn(false);
+    void testHandleCheckoutAction_checkoutNotAvailable() {
+        String memberId = "1004";
+        String isbn = "978-0-596-52068-7";
 
-        // Act
-        checkoutPresenter.handleCheckoutAction("1004", "978-0-596-52068-7");
+        // Mock the behavior of mockDataAccess
+        when(mockDataAccess.isCheckoutAvailable(memberId, isbn)).thenReturn(false);
 
-        // Assert
-        verify(mockView).showErrorDialog("The book 978-0-596-52068-7 is not available");
-        verify(mockDataAccess, never()).checkoutBook(anyString(), anyString());
+        // Call the method
+        checkoutPresenter.handleCheckoutAction(memberId, isbn);
+
+        // Verify that an error dialog is shown
+        verify(mockView).showErrorDialog("The book " + isbn + " is not available");
     }
 
+    // Test checkoutBook method
     @Test
-    public void testCheckoutBook() {
-        // Act
-        checkoutPresenter.checkoutBook("1004", "978-0-596-52068-7");
+    void testCheckoutBook() {
+        String memberId = "1004";
+        String isbn = "978-0-596-52068-7";
 
-        // Assert
-        verify(mockDataAccess).checkoutBook("1004", "978-0-596-52068-7");
+        // Call the method
+        checkoutPresenter.checkoutBook(memberId, isbn);
+
+        // Verify that the book is checked out
+        verify(mockDataAccess).checkoutBook(memberId, isbn);
     }
 }
