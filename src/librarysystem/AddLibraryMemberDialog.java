@@ -1,6 +1,7 @@
 package librarysystem;
 
 import business.ControllerInterface;
+import business.IValidator;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -8,6 +9,8 @@ import java.awt.event.*;
 public class AddLibraryMemberDialog extends JDialog {
     private ControllerInterface controller;
     private IDialogEventListenter listenter;
+    private IValidator validator;
+
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -18,14 +21,18 @@ public class AddLibraryMemberDialog extends JDialog {
     private JTextField phoneTextField;
     private JTextField cityTextField;
     private JTextField zipTextField;
+    private JTextArea errorMessagesTextArea;
 
-    public AddLibraryMemberDialog(IDialogEventListenter listenter, ControllerInterface controller) {
+    public AddLibraryMemberDialog(IDialogEventListenter listenter, ControllerInterface controller, IValidator validator) {
         this.listenter = listenter;
         this.controller = controller;
+        this.validator = validator;
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
         setSize(600, 400);
+
+        errorMessagesTextArea.setVisible(false);
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -55,6 +62,53 @@ public class AddLibraryMemberDialog extends JDialog {
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
+    private Boolean validateFields(String firstName, String lastName, String street, String city, String state, String zip, String phone) {
+        String errorMessages = "";
+        errorMessagesTextArea.setText("");
+        errorMessagesTextArea.setVisible(false);
+        try {
+            validator.validateFirstName(firstName);
+        } catch (Exception e) {
+            errorMessages += "- " + e.getMessage() + " \n";
+        }
+        try {
+            validator.validateLastName(lastName);
+        } catch (Exception e) {
+            errorMessages += "- " + e.getMessage() + " \n";
+        }
+        try {
+            validator.validateStreet(street);
+        } catch (Exception e) {
+            errorMessages += "- " + e.getMessage() + " \n";
+        }
+        try {
+            validator.validateCity(city);
+        } catch (Exception e) {
+            errorMessages += "- " + e.getMessage() + " \n";
+        }
+        try {
+            validator.validateState(state);
+        } catch (Exception e) {
+            errorMessages += "- " + e.getMessage() + " \n";
+        }
+        try {
+            validator.validateZipCode(zip);
+        } catch (Exception e) {
+            errorMessages += "- " + e.getMessage() + " \n";
+        }
+        try {
+            validator.validatePhoneNumber(phone);
+        } catch (Exception e) {
+            errorMessages += "- " + e.getMessage() + " \n";
+        }
+        if (!errorMessages.isEmpty()) {
+            errorMessagesTextArea.setText(errorMessages);
+            errorMessagesTextArea.setVisible(true);
+            return false;
+        }
+        return true;
+    }
+
     private void onOK() {
         // add your code here
         String firstName = firstNameTextField.getText();
@@ -64,6 +118,9 @@ public class AddLibraryMemberDialog extends JDialog {
         String phone = phoneTextField.getText();
         String city = cityTextField.getText();
         String zip = zipTextField.getText();
+        if (!validateFields(firstName, lastName, street, city, state, zip, phone)) {
+            return;
+        }
         controller.addLibraryMember(firstName, lastName, phone, street, state, city, zip);
         dispose();
     }
