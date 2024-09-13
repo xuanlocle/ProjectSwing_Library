@@ -1,12 +1,11 @@
 package librarysystem.checkout;
 
-import business.CheckoutRecord;
+import business.CheckoutEntry;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDate;
 import java.util.HashMap;
 
 public class CheckoutPanelForm extends JPanel implements ICheckoutView {
@@ -17,7 +16,8 @@ public class CheckoutPanelForm extends JPanel implements ICheckoutView {
     private JTextField txtISBN;
     private JButton btnCheckout;
     private JPanel checkoutPanel;
-    private final String[] columnNames = {"ISBN", "Title", "Checkout Date", "Due Date"};
+    private JLabel lblCheckoutRecord;
+    private final String[] columnNames = {"No.", "ISBN", "Title", "Checkout Date", "Due Date"};
 
     public CheckoutPanelForm() {
         mPresenter = new CheckoutPresenter(this);
@@ -36,16 +36,6 @@ public class CheckoutPanelForm extends JPanel implements ICheckoutView {
     }
 
     private void initTable() {
-        LocalDate today = LocalDate.now();
-//        Object[][] data = {
-//                {"Book 1B", 1, today},
-//                {"Book 2", 2, today},
-//                {"Book 3", 1, today},
-//                {"Book 4", 3, today}
-//        };
-
-//        List<String> datas = new ArrayList<>();
-
         // Create a table model and set it to the table
         DefaultTableModel tableModel = new DefaultTableModel(new Object[][]{}, columnNames) {
             @Override
@@ -68,7 +58,13 @@ public class CheckoutPanelForm extends JPanel implements ICheckoutView {
     }
 
     @Override
-    public void updateTable(HashMap<Integer, CheckoutRecord> cr) {
+    public void updateTable(String memberId, HashMap<Integer, CheckoutEntry> cr) {
+
+        if(memberId == null) {
+            lblCheckoutRecord.setText("All checkout entries of library");
+        } else {
+            lblCheckoutRecord.setText("Checkout Records of member: " + memberId);
+        }
 
         Object[][] rows = new Object[][]{};
 
@@ -80,11 +76,12 @@ public class CheckoutPanelForm extends JPanel implements ICheckoutView {
         };
 
         for (int i = 0; i < cr.size(); i++) {
-            CheckoutRecord record = cr.get(i);
-            tableModel.addRow(record.toRowData());
+            CheckoutEntry record = cr.get(i);
+            Object[] row = record.toRowData();
+            row[0] = i + 1;
+            tableModel.addRow(row);
         }
 
         table1.setModel(tableModel);
-//        ((AbstractTableModel) table1.getModel()).fireTableDataChanged();
     }
 }

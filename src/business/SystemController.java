@@ -17,11 +17,17 @@ public class SystemController implements ControllerInterface {
 
 	public SystemController(DataAccess dataAccess) {
 		this.dataAccess = dataAccess;
+		migration();
+	}
+
+	private void migration() {
+		dataAccess.migrationMemberRecord();
 	}
 
 	public static void registerAuthStateListener(IAuthStateListener listener) {
 		authStateListeners.add(listener);
 	}
+
 	public void login(String id, String password) throws LoginException {
 		DataAccess da = new DataAccessFacade();
 		HashMap<String, User> map = da.readUserMap();

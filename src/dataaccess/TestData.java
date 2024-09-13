@@ -57,14 +57,12 @@ public class TestData {
 		members.add(libraryMember);
 		
 		DataAccessFacade.loadMemberMap(members);
-
-		DataAccessFacade.loadCheckoutRecordMap(checkoutRecords);
 	}
 	
 	///////////// DATA //////////////
 	List<LibraryMember> members = new ArrayList<LibraryMember>();
 
-	List<CheckoutRecord> checkoutRecords = new ArrayList<>();
+	List<CheckoutEntry> checkoutRecords = new ArrayList<>();
 	@SuppressWarnings("serial")
 	
 	List<Address> addresses = new ArrayList<Address>() {

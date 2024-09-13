@@ -7,16 +7,13 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 public class DataAccessFacade implements DataAccess {
-	private boolean isTest = false;
+    private boolean isTest = false;
 	enum StorageType {
-		BOOKS, MEMBERS, USERS, AUTHOR, RECORDS ;
+		BOOKS, MEMBERS, USERS, AUTHOR;
 	}
 
 	private static String OUTPUT_DIR = System.getProperty("user.dir") + "/src/dataaccess/storage";
@@ -40,12 +37,51 @@ public class DataAccessFacade implements DataAccess {
 		}
 	}
 
-	//implement: other save operations
+	@Override
+	public HashMap<Integer, CheckoutEntry> getAllCheckoutEntries() {
+		HashMap<String, LibraryMember> members = readMemberMap();
+		HashMap<Integer, CheckoutEntry> checkoutEntries = new HashMap<>();
+		int i = 0;
+		for (LibraryMember member : members.values()) {
+			for (CheckoutEntry entry : member.getRecord().getCheckoutEntries()) {
+				checkoutEntries.put(i++, entry);
+			}
+		}
+		return checkoutEntries;
+	}
+
+    @Override
+    public HashMap<Integer, CheckoutEntry> getCheckoutEntriesByMemberId(String memberId) {
+        HashMap<String, LibraryMember> members = readMemberMap();
+        HashMap<Integer, CheckoutEntry> checkoutEntries = new HashMap<>();
+
+        if (members.containsKey(memberId)) {
+            LibraryMember member = members.get(memberId);
+            int i = 0;
+            for (CheckoutEntry entry : member.getRecord().getCheckoutEntries()) {
+                checkoutEntries.put(i++, entry);
+            }
+        }
+        return checkoutEntries;
+    }
+
+    @Override
+    public void migrationMemberRecord() {
+        HashMap<String, LibraryMember> mems = readMemberMap();
+        for (LibraryMember member : mems.values()) {
+            if (member.getRecord() == null) {
+                member.setRecord(new CheckoutRecord(new ArrayList<>()));
+            }
+        }
+        saveToStorage(StorageType.MEMBERS, mems);
+    }
+
+    //implement: other save operations
 	public void saveNewMember(LibraryMember member) {
 		HashMap<String, LibraryMember> mems = readMemberMap();
 		String memberId = member.getMemberId();
 		mems.put(memberId, member);
-		saveToStorage(StorageType.MEMBERS, mems);	
+		saveToStorage(StorageType.MEMBERS, mems);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -101,7 +137,7 @@ public class DataAccessFacade implements DataAccess {
 		//   isbn -> Book
 		return (HashMap<String,Book>) readFromStorage(StorageType.BOOKS);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public HashMap<String, LibraryMember> readMemberMap() {
 		//Returns a Map with name/value pairs being
@@ -109,20 +145,20 @@ public class DataAccessFacade implements DataAccess {
 		return (HashMap<String, LibraryMember>) readFromStorage(
 				StorageType.MEMBERS);
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	public HashMap<String, User> readUserMap() {
 		//Returns a Map with name/value pairs being
 		//   userId -> User
 		return (HashMap<String, User>)readFromStorage(StorageType.USERS);
 	}
-	
-	
+
+
 	/////load methods - these place test data into the storage area
-	///// - used just once at startup  
-	
-		
+	///// - used just once at startup
+
+
 	static void loadBookMap(List<Book> bookList) {
 		HashMap<String, Book> books = new HashMap<String, Book>();
 		bookList.forEach(book -> books.put(book.getIsbn(), book));
@@ -133,7 +169,7 @@ public class DataAccessFacade implements DataAccess {
 		userList.forEach(user -> users.put(user.getId(), user));
 		saveToStorage(StorageType.USERS, users);
 	}
- 
+
 	static void loadMemberMap(List<LibraryMember> memberList) {
 		HashMap<String, LibraryMember> members = new HashMap<String, LibraryMember>();
 		memberList.forEach(member -> members.put(member.getMemberId(), member));
@@ -162,42 +198,34 @@ public class DataAccessFacade implements DataAccess {
 
 	@Override
 	public void checkoutBook(String memberId, String isbn) {
-		HashMap<String, Book> books = getBooks();
-		Book b = books.get(isbn);
-		BookCopy currentCopy = b.getNextAvailableCopy();
-		HashMap<Integer, CheckoutRecord> records = readCheckoutRecordMap();
-		CheckoutRecord newRecord= new CheckoutRecord(LocalDate.now().plusDays(currentCopy.getBook().getMaxCheckoutLength()),currentCopy);
-		records.put(records.size(), newRecord);
+        //get member
+        HashMap<String, LibraryMember> members = readMemberMap();
+        LibraryMember member = members.get(memberId);
 
-		currentCopy.changeAvailability();
-		b.updateCopies(currentCopy);
-		books.put(isbn, b);
-		saveToStorage(StorageType.RECORDS, records);
-		saveToStorage(StorageType.BOOKS, books);
-	}
+        //get book
+        HashMap<String, Book> books = getBooks();
+        Book b = books.get(isbn);
+        BookCopy currentCopy = b.getNextAvailableCopy();
 
+        //create new entry
+        CheckoutEntry newEntry = new CheckoutEntry(LocalDate.now().plusDays(currentCopy.getBook().getMaxCheckoutLength()),
+                currentCopy);
+        //add entry to member's record
+        member.getRecord().getCheckoutEntries().add(newEntry);
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public HashMap<Integer, CheckoutRecord> readCheckoutRecordMap() {
-		Object o =  readFromStorage(StorageType.RECORDS);
-		if(o!= null) {
-			return (HashMap<Integer, CheckoutRecord>) o;
-		} else {
-			return new HashMap<>();
-		}
-	}
+        //savebook
+        currentCopy.changeAvailability();
+        b.updateCopies(currentCopy);
+        books.put(isbn, b);
+        saveToStorage(StorageType.BOOKS, books);
 
-
+        //save members
+        members.put(memberId, member);
+        saveToStorage(StorageType.MEMBERS, members);
+    }
 
 	/////load methods - these place test data into the storage area
 	///// - used just once at startup
-
-	static void loadCheckoutRecordMap(List<CheckoutRecord> checkoutRecords) {
-		HashMap<Integer, CheckoutRecord> records = new HashMap<>();
-		checkoutRecords.forEach(cr -> records.put(records.size(), cr));
-		saveToStorage(StorageType.RECORDS, records);
-	}
 
 	static void createFileIfNotExist(String fileName) {
 		try {
@@ -206,7 +234,7 @@ public class DataAccessFacade implements DataAccess {
 		} catch(IOException e) {
 		}
 	}
-	
+
 	static void saveToStorage(StorageType type, Object ob) {
 		ObjectOutputStream out = null;
 		try {
@@ -225,7 +253,7 @@ public class DataAccessFacade implements DataAccess {
 			}
 		}
 	}
-	
+
 	static Object readFromStorage(StorageType type) {
 		ObjectInputStream in = null;
 		Object retVal = null;
@@ -248,18 +276,18 @@ public class DataAccessFacade implements DataAccess {
 		}
 		return retVal;
 	}
-	
-	
-	
+
+
+
 	final static class Pair<S,T> implements Serializable{
-		
+
 		S first;
 		T second;
 		Pair(S s, T t) {
 			first = s;
 			second = t;
 		}
-		@Override 
+		@Override
 		public boolean equals(Object ob) {
 			if(ob == null) return false;
 			if(this == ob) return true;
@@ -268,8 +296,8 @@ public class DataAccessFacade implements DataAccess {
 			Pair<S,T> p = (Pair<S,T>)ob;
 			return p.first.equals(first) && p.second.equals(second);
 		}
-		
-		@Override 
+
+		@Override
 		public int hashCode() {
 			return first.hashCode() + 5 * second.hashCode();
 		}
@@ -279,5 +307,5 @@ public class DataAccessFacade implements DataAccess {
 		}
 		private static final long serialVersionUID = 5399827794066637059L;
 	}
-	
+
 }

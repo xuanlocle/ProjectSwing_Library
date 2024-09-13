@@ -1,6 +1,6 @@
 package librarysystem.checkout;
 
-import business.CheckoutRecord;
+import business.CheckoutEntry;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessFacade;
 
@@ -23,17 +23,16 @@ public class CheckoutPresenter implements ICheckoutPresenter {
 
     @Override
     public void fetchData() {
-        HashMap<Integer, CheckoutRecord> cr = mDataAccess.readCheckoutRecordMap();
+        HashMap<Integer, CheckoutEntry> cr = mDataAccess.getAllCheckoutEntries();
 //        System.out.println("checkour records size: " + cr.size());
 
         if (cr != null) {
-            mView.updateTable(cr);
+            mView.updateTable(null, cr);
         }
     }
 
     @Override
     public void handleCheckoutAction(String memberId, String isbn) {
-        System.out.println("Clicked Checkout");
         if (memberId.isEmpty()) {
             mView.showErrorDialog("Member ID is empty");
             return;
@@ -49,7 +48,7 @@ public class CheckoutPresenter implements ICheckoutPresenter {
         if (mDataAccess.isCheckoutAvailable(memberId, isbn)) {
             checkoutBook(memberId, isbn);
             mView.showSuccessDialog("Checkout successful");
-            mView.updateTable(mDataAccess.readCheckoutRecordMap());
+            mView.updateTable(memberId, mDataAccess.getCheckoutEntriesByMemberId(memberId));
         } else {
             mView.showErrorDialog("The book " + isbn + " is not available");
         }
@@ -57,9 +56,7 @@ public class CheckoutPresenter implements ICheckoutPresenter {
 
     @Override
     public void checkoutBook(String memberId, String isbn) {
-
         mDataAccess.checkoutBook(memberId, isbn);
-
     }
 
 }
