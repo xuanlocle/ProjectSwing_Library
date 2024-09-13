@@ -8,7 +8,6 @@ import java.awt.event.*;
 
 public class AddLibraryMemberDialog extends JDialog {
     private ControllerInterface controller;
-    private IDialogEventListenter listenter;
     private IValidator validator;
 
     private JPanel contentPane;
@@ -23,8 +22,7 @@ public class AddLibraryMemberDialog extends JDialog {
     private JTextField zipTextField;
     private JTextArea errorMessagesTextArea;
 
-    public AddLibraryMemberDialog(IDialogEventListenter listenter, ControllerInterface controller, IValidator validator) {
-        this.listenter = listenter;
+    public AddLibraryMemberDialog(ControllerInterface controller, IValidator validator) {
         this.controller = controller;
         this.validator = validator;
         setContentPane(contentPane);

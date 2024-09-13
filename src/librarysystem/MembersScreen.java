@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MembersScreen implements IDialogEventListenter {
+public class MembersScreen {
     private JPanel membersPanel;
     private JTextField memberIDTextField;
     private JButton searchButton;
@@ -38,7 +38,7 @@ public class MembersScreen implements IDialogEventListenter {
 
     private void addLibraryMemberBtnPressed() {
         IValidator validator = new Validator();
-        JDialog dialog = new AddLibraryMemberDialog(this, controller, validator);
+        JDialog dialog = new AddLibraryMemberDialog(controller, validator);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
         initMembersTable();
@@ -86,15 +86,5 @@ public class MembersScreen implements IDialogEventListenter {
             }
         }
         membersTable.setModel(model);
-    }
-
-    @Override
-    public void onOKButtonClicked() {
-        initMembersTable();
-    }
-
-    @Override
-    public void onCancelButtonClicked() {
-
     }
 }

@@ -28,6 +28,11 @@ public class SystemController implements ControllerInterface {
 		authStateListeners.add(listener);
 	}
 
+	public static void deregisterAuthStateListener(IAuthStateListener listener) {
+		authStateListeners.remove(listener);
+	}
+
+
 	public void login(String id, String password) throws LoginException {
 		DataAccess da = new DataAccessFacade();
 		HashMap<String, User> map = da.readUserMap();
@@ -43,6 +48,7 @@ public class SystemController implements ControllerInterface {
 		for (IAuthStateListener l : authStateListeners) {
 			l.onLogin(currentAuth);
 		}
+
 	}
 
 	@Override
@@ -51,6 +57,11 @@ public class SystemController implements ControllerInterface {
 		for (IAuthStateListener l : authStateListeners) {
 			l.onLogout();
 		}
+	}
+
+	@Override
+	public void addUser(String id, String password, Auth auth) {
+		this.dataAccess.addUser(id, password, auth);
 	}
 
 	@Override
@@ -138,7 +149,15 @@ public class SystemController implements ControllerInterface {
 
 	@Override
 	public void addLibraryMember(String firstName, String lastName, String phone, String street, String city, String state, String zip) {
-		String memberId = generateMemberId();
+		IValidator validator = new Validator();
+        validator.validateFirstName(firstName);
+        validator.validateLastName(lastName);
+        validator.validatePhoneNumber(phone);
+        validator.validateStreet(street);
+        validator.validateCity(city);
+        validator.validateState(state);
+        validator.validateZipCode(zip);
+        String memberId = generateMemberId();
 		Address address = new Address(street, city, state, zip);
 		LibraryMember member = new LibraryMember(memberId, firstName, lastName, phone, address);
 		dataAccess.saveNewMember(member);

@@ -1,10 +1,15 @@
 package business;
 
+import dataaccess.Auth;
+import dataaccess.User;
+
 import java.util.List;
 
 public interface ControllerInterface {
 	void login(String id, String password) throws LoginException;
 	void logout();
+	void addUser(String id, String password, Auth auth);
+
 	List<String> allMemberIds();
 	List<String> allBookIds();
 
