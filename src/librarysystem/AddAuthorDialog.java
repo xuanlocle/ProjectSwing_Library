@@ -3,7 +3,6 @@ package librarysystem;
 import business.Address;
 import business.Author;
 import business.ControllerInterface;
-import librarysystem.common.ISBNWithHyphenDocumentFilter;
 import librarysystem.common.NumericDocumentFilter;
 
 import javax.swing.*;
@@ -13,7 +12,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static librarysystem.Util.isFieldValid;
+import static util.Util.isFieldValid;
 
 public class AddAuthorDialog extends JDialog {
     ControllerInterface controller;

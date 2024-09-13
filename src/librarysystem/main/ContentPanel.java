@@ -48,7 +48,7 @@ public class ContentPanel extends JPanel {
 
     private void initBookPage() {
         bookPanel = new BookMgmtView(Main.controller);
-        add(bookPanel, "ManageBook");
+        add(bookPanel.getMainPanel(), "ManageBook");
     }
 
     // Method to switch to the requested panel
