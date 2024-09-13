@@ -4,6 +4,7 @@ import business.SystemController;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessFacade;
 import librarysystem.BookMgmtView;
+import librarysystem.HomeScreen;
 import librarysystem.LoginScreen;
 import librarysystem.MembersScreen;
 import librarysystem.checkout.CheckoutPanelForm;
@@ -26,10 +27,18 @@ public class ContentPanel extends JPanel {
 
         // Add the panels to the card layout
         initLoginPanel();
+        initHomePanel();
         initCheckoutPanel();
         initMemberPanel();
         add(helpPanel, "Help");
         initBookPage();
+    }
+
+    private void initHomePanel() {
+        DataAccess dataAccess = new DataAccessFacade();
+        ControllerInterface controller = new SystemController(dataAccess);
+        JPanel homePanel = new HomeScreen(controller).getPanel();
+        add(homePanel, "Home");
     }
 
     private void initLoginPanel() {

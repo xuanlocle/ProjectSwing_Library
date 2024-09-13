@@ -10,6 +10,7 @@ import dataaccess.User;
 
 public class SystemController implements ControllerInterface {
 	public static Auth currentAuth = null;
+	public static List<IAuthStateListener> authStateListeners = new ArrayList<IAuthStateListener>();
 	DataAccess dataAccess;
 
 	public SystemController() {}
@@ -17,7 +18,10 @@ public class SystemController implements ControllerInterface {
 	public SystemController(DataAccess dataAccess) {
 		this.dataAccess = dataAccess;
 	}
-	
+
+	public static void registerAuthStateListener(IAuthStateListener listener) {
+		authStateListeners.add(listener);
+	}
 	public void login(String id, String password) throws LoginException {
 		DataAccess da = new DataAccessFacade();
 		HashMap<String, User> map = da.readUserMap();
@@ -29,8 +33,20 @@ public class SystemController implements ControllerInterface {
 			throw new LoginException("Password incorrect");
 		}
 		currentAuth = map.get(id).getAuthorization();
-		
+
+		for (IAuthStateListener l : authStateListeners) {
+			l.onLogin(currentAuth);
+		}
 	}
+
+	@Override
+	public void logout() {
+		currentAuth = null;
+		for (IAuthStateListener l : authStateListeners) {
+			l.onLogout();
+		}
+	}
+
 	@Override
 	public List<String> allMemberIds() {
 		DataAccess da = new DataAccessFacade();
