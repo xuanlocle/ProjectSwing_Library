@@ -8,6 +8,12 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessFacade;
 import dataaccess.User;
 
+import javax.swing.*;
+
+import static util.Util.isFieldValid;
+import static util.ValidationHelper.isValidISBN;
+import static util.ValidationHelper.isValidString;
+
 public class SystemController implements ControllerInterface {
 	public static Auth currentAuth = null;
 	public static List<IAuthStateListener> authStateListeners = new ArrayList<IAuthStateListener>();
@@ -88,9 +94,34 @@ public class SystemController implements ControllerInterface {
 		}
 		return authors.values().stream().toList();
 	}
+	private boolean isValidAuthor(Author author) {
+		if (!isValidString(author.getFirstName()))
+			return false;
+		if (!isValidString(author.getLastName()))
+			return false;
+		if (Objects.isNull(author.getAddress()))
+			return false;
+		if (!isValidString(author.getAddress().getStreet()))
+			return false;
+		if (!isValidString(author.getAddress().getCity()))
+			return false;
+		if (!isValidString(author.getAddress().getState()))
+			return false;
+		if (!isValidString(author.getAddress().getZip()))
+			return false;
+		if (!isValidString(author.getTelephone()))
+			return false;
+		if (!isValidString(author.getBio()))
+			return false;
+		return true;
+	}
 
 	@Override
 	public boolean saveAuthor(Author author) {
+		if (!isValidAuthor(author)) {
+			return false;
+		}
+
 		HashMap<String, Author> authors = dataAccess.getAuthors();
 		if (authors.containsKey(author.getFirstName() + author.getLastName())) {
 			return false;
@@ -113,8 +144,27 @@ public class SystemController implements ControllerInterface {
 		return convertBookToList(books);
 	}
 
+	private boolean isValidBook(Book book) {
+		if (!isValidISBN(book.getIsbn())) {
+			return false;
+		}
+
+		if (!isValidString(book.getTitle())) {
+			return false;
+		}
+
+		if (book.getAuthors().isEmpty()) {
+			return false;
+		}
+		return true;
+	}
+
 	@Override
 	public boolean saveBook(Book book) {
+		if (!isValidBook(book)) {
+			return false;
+		}
+
 		HashMap<String, Book> books = dataAccess.getBooks();
 		if (books.containsKey(book.getIsbn())) {
 			return false;

@@ -163,8 +163,7 @@ public class BookMgmtView  implements IAuthorHolderView {
 
         boolean isSaved = controller.saveBook(book);
         if (!isSaved) {
-            JOptionPane.showMessageDialog(
-                    mainPanel, "Cannot save book. Please check ISBN", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(mainPanel, "Error when saving", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         return true;
