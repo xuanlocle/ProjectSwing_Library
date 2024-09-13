@@ -108,7 +108,7 @@ public class BookMgmtView extends JPanel implements IAuthorHolderView {
         Author author = book.getAuthors().get(0);
         String authorFullName = author.getFirstName() + ", " + author.getLastName();
         String rule = book.getMaxCheckoutLength() + " days";
-        String available = book.getNumCopies() > 0 ? "Available" : "Occupied";
+        String available = book.isAvailable() ? "Available" : "Occupied";
         return new Object[] {
                 "Add Copy",
                 book.getIsbn(),
@@ -157,14 +157,21 @@ public class BookMgmtView extends JPanel implements IAuthorHolderView {
         this.books = controller.getBooks();
     }
 
-    private void saveBook() {
+    private boolean saveBook() {
         Book book = new Book(
                 txtISBN.getText(),
                 txtTitle.getText(),
                 comboItems.get(comboRule.getSelectedIndex()).getValue(),
                 this.authors,
                 Integer.parseInt(txtCopies.getText()));
-        controller.saveBook(book);
+
+        boolean isSaved = controller.saveBook(book);
+        if (!isSaved) {
+            JOptionPane.showMessageDialog(
+                    this, "Cannot save book. Please check ISBN", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
     }
 
     private void addBookCopy(int index) {
@@ -175,9 +182,11 @@ public class BookMgmtView extends JPanel implements IAuthorHolderView {
         if (!validateBook())
             return;
 
-        saveBook();
-        resetBtnPressed();
-        refreshBookTable();
+        boolean saved = saveBook();
+        if (saved) {
+            resetBtnPressed();
+            refreshBookTable();
+        }
     }
 
     private void resetBtnPressed() {
@@ -199,5 +208,9 @@ public class BookMgmtView extends JPanel implements IAuthorHolderView {
     public void setAuthors(List<Author> authors) {
         this.authors = authors;
         this.initTableAuthor();
+    }
+
+    public void reload() {
+        refreshBookTable();
     }
 }

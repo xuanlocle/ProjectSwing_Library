@@ -79,8 +79,14 @@ public class SystemController implements ControllerInterface {
 	}
 
 	@Override
-	public void saveAuthor(Author author) {
+	public boolean saveAuthor(Author author) {
+		HashMap<String, Author> authors = dataAccess.getAuthors();
+		if (authors.containsKey(author.getFirstName() + author.getLastName())) {
+			return false;
+		}
+
 		dataAccess.saveAuthor(author);
+		return true;
 	}
 
 	private List<Book> convertBookToList(HashMap<String, Book> books) {
@@ -97,8 +103,14 @@ public class SystemController implements ControllerInterface {
 	}
 
 	@Override
-	public void saveBook(Book book) {
+	public boolean saveBook(Book book) {
+		HashMap<String, Book> books = dataAccess.getBooks();
+		if (books.containsKey(book.getIsbn())) {
+			return false;
+		}
+
 		dataAccess.saveBook(book);
+		return true;
 	}
 
 	@Override
