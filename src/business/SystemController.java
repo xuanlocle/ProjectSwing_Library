@@ -1,9 +1,7 @@
 package business;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import dataaccess.Auth;
 import dataaccess.DataAccess;
@@ -84,5 +82,31 @@ public class SystemController implements ControllerInterface {
 	@Override
 	public void addACopy(Book book) {
 		dataAccess.addACopy(book);
+	}
+
+	@Override
+	public List<LibraryMember> getLibraryMembers() {
+		HashMap<String, LibraryMember> members = dataAccess.readMemberMap();
+		if (Objects.isNull(members)) {
+			return List.of();
+		}
+		return members.values().stream().toList();
+	}
+
+	private String generateMemberId() {
+		List<Integer> memberIds = allMemberIds().stream().map(Integer::parseInt).toList();;
+		if (memberIds.isEmpty()) {
+			return "1";
+		}
+		Integer maxMemberId = Collections.max(memberIds);
+		return String.valueOf( maxMemberId + 1);
+	}
+
+	@Override
+	public void addLibraryMember(String firstName, String lastName, String phone, String street, String city, String state, String zip) {
+		String memberId = generateMemberId();
+		Address address = new Address(street, city, state, zip);
+		LibraryMember member = new LibraryMember(memberId, firstName, lastName, phone, address);
+		dataAccess.saveNewMember(member);
 	}
 }
