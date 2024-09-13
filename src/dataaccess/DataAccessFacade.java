@@ -68,6 +68,9 @@ public class DataAccessFacade implements DataAccess {
     @Override
     public void migrationMemberRecord() {
         HashMap<String, LibraryMember> mems = readMemberMap();
+		if (mems == null) {
+			mems = new HashMap<>();
+		}
         for (LibraryMember member : mems.values()) {
             if (member.getRecord() == null) {
                 member.setRecord(new CheckoutRecord(new ArrayList<>()));
@@ -82,6 +85,17 @@ public class DataAccessFacade implements DataAccess {
 		String memberId = member.getMemberId();
 		mems.put(memberId, member);
 		saveToStorage(StorageType.MEMBERS, mems);
+	}
+
+	@Override
+	public void addUser(String id, String password, Auth auth) {
+		User user = new User(id, password, auth);
+		HashMap<String, User> userMap = readUserMap();
+		if (userMap == null) {
+			userMap = new HashMap<>();
+		}
+		userMap.put(user.getId(), user);
+		loadUserMap(new ArrayList<User>(userMap.values()));
 	}
 
 	@SuppressWarnings("unchecked")

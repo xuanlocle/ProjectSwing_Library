@@ -9,6 +9,7 @@ public interface DataAccess {
 	HashMap<String,User> readUserMap();
 	HashMap<String, LibraryMember> readMemberMap();
 	void saveNewMember(LibraryMember member);
+	void addUser(String id, String password, Auth auth);
 
 	HashMap<String, Author> getAuthors();
 	void saveAuthor(Author author);

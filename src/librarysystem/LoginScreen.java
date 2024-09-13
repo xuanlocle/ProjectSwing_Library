@@ -23,7 +23,6 @@ public class LoginScreen {
             SystemController sc = new SystemController();
             try {
                 sc.login(ID, password);
-                JOptionPane.showMessageDialog(panel,"Successful Login");
             } catch (LoginException ex) {
                 JOptionPane.showMessageDialog(panel, ex.getMessage());
             } finally {
