@@ -1,6 +1,6 @@
 package librarysystem.main;
 import librarysystem.*;
-import librarysystem.checkout.CheckoutPanelForm;
+import librarysystem.CheckoutPanelForm;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,7 +37,7 @@ public class ContentPanel extends JPanel {
     }
 
     private void initCheckoutPanel() {
-        checkoutPanel = new CheckoutPanelForm().getPanel();
+        checkoutPanel = new CheckoutPanelForm(Main.controller).getPanel();
         add(checkoutPanel, "Checkout");
     }
 

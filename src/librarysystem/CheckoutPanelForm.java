@@ -1,6 +1,8 @@
-package librarysystem.checkout;
+package librarysystem;
 
 import business.CheckoutEntry;
+import business.ControllerInterface;
+import business.ICheckoutView;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -9,18 +11,19 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 
 public class CheckoutPanelForm implements ICheckoutView {
-    private ICheckoutPresenter mPresenter;
+    private final ControllerInterface controller;
 
     private JTable table1;
     private JTextField txtMemberId;
     private JTextField txtISBN;
     private JButton btnCheckout;
     private JPanel checkoutPanel;
+
     private JLabel lblCheckoutRecord;
     private final String[] columnNames = {"No.", "ISBN", "Title", "Checkout Date", "Due Date"};
 
-    public CheckoutPanelForm() {
-        mPresenter = new CheckoutPresenter(this);
+    public CheckoutPanelForm(ControllerInterface controller) {
+        this.controller = controller;
 
         // Create a table with 4 columns
         initTable();
@@ -28,10 +31,17 @@ public class CheckoutPanelForm implements ICheckoutView {
         btnCheckout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mPresenter.handleCheckoutAction(txtMemberId.getText(), txtISBN.getText());
+                controller.handleCheckoutAction(txtMemberId.getText(), txtISBN.getText(), CheckoutPanelForm.this);
             }
         });
-        mPresenter.fetchData();
+        fetchData();
+    }
+
+    public void fetchData() {
+        HashMap<Integer, CheckoutEntry> cr = controller.getAllCheckoutEntries();
+        if (cr != null) {
+            updateTable(null, cr);
+        }
     }
 
     public JPanel getPanel() {

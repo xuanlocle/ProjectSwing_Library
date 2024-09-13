@@ -3,6 +3,7 @@ package business;
 import dataaccess.Auth;
 import dataaccess.User;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface ControllerInterface {
@@ -22,4 +23,11 @@ public interface ControllerInterface {
 
 	List<LibraryMember> getLibraryMembers();
 	void addLibraryMember(String firstName, String lastName, String phone, String street, String city, String state, String zip);
+
+	HashMap<Integer, CheckoutEntry> getAllCheckoutEntries();
+	void handleCheckoutAction(String memberId, String isbn, ICheckoutView action);
+	void checkoutBook(String memberId, String isbn);
+
+
+
 }

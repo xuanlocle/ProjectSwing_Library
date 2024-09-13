@@ -18,7 +18,7 @@ public interface DataAccess {
 	void saveBook(Book book);
 	void addACopy(Book book);
 
-	boolean isCheckoutAvailable(String memberId, String isbn);
+	boolean isCheckoutAvailable(String memberId, String isbn) throws CheckoutException;
 	void checkoutBook(String memberId, String isbn);
 
 	void cleanUpTestStorage();
