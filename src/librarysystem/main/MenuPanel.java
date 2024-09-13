@@ -24,10 +24,6 @@ public class MenuPanel extends JPanel implements IAuthStateListener {
         btnMember = new JButton("Member");
 
         initMenu();
-//        this.add(btnLogin);
-//        this.add(btnBook);
-//        this.add(btnCheckout);
-//        this.add(btnMember);
 
         SystemController.registerAuthStateListener(this);
     }
