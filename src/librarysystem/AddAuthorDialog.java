@@ -147,6 +147,7 @@ public class AddAuthorDialog extends JDialog {
     private void onAdd() {
         if (!validateForm())
             return;
+
         Address address = new Address(
                 txtStreet.getText(),
                 txtCity.getText(),
@@ -163,7 +164,7 @@ public class AddAuthorDialog extends JDialog {
         boolean saved = controller.saveAuthor(author);
         if (!saved) {
             JOptionPane.showMessageDialog(
-                    this, "Please check Name", "Error", JOptionPane.ERROR_MESSAGE);
+                    this, "Error when saving", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
