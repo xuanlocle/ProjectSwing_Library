@@ -37,7 +37,7 @@ public class ContentPanel extends JPanel {
     }
 
     private void initCheckoutPanel() {
-        checkoutPanel = new CheckoutPanelForm();
+        checkoutPanel = new CheckoutPanelForm().getPanel();
         add(checkoutPanel, "Checkout");
     }
 
