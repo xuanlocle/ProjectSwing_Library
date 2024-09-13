@@ -9,10 +9,10 @@ public interface ControllerInterface {
 	List<String> allBookIds();
 
 	List<Author> getAuthors();
-	void saveAuthor(Author author);
+	boolean saveAuthor(Author author);
 
 	List<Book> getBooks();
-	void saveBook(Book book);
+	boolean saveBook(Book book);
 	void addACopy(Book book);
 
 	List<LibraryMember> getLibraryMembers();

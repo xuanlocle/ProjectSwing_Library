@@ -3,9 +3,12 @@ package librarysystem;
 import business.Address;
 import business.Author;
 import business.ControllerInterface;
+import librarysystem.common.ISBNWithHyphenDocumentFilter;
+import librarysystem.common.NumericDocumentFilter;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.AbstractDocument;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +46,9 @@ public class AddAuthorDialog extends JDialog {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
+
+        ((AbstractDocument) txtZip.getDocument()).setDocumentFilter(new NumericDocumentFilter(5));
+        ((AbstractDocument) txtPhone.getDocument()).setDocumentFilter(new NumericDocumentFilter(10));
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -154,7 +160,14 @@ public class AddAuthorDialog extends JDialog {
                 address,
                 txtBio.getText(),
                 chkExpert.isSelected());
-        controller.saveAuthor(author);
+
+        boolean saved = controller.saveAuthor(author);
+        if (!saved) {
+            JOptionPane.showMessageDialog(
+                    this, "Please check Name", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         getAuthors();
         refreshTable();
     }
