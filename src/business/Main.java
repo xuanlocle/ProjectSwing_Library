@@ -11,6 +11,7 @@ public class Main {
 		System.out.println(allWhoseZipContains3());
 		System.out.println(allHavingOverdueBook());
 		System.out.println(allHavingMultipleAuthors());
+        System.out.println(allHavingCheckoutRecords());
 
 	}
 	//Returns a list of all ids of LibraryMembers whose zipcode contains the digit 3
@@ -45,4 +46,11 @@ public class Main {
 		
 		}
 
+    public static List<String> allHavingCheckoutRecords() {
+        DataAccess da = new DataAccessFacade();
+        Collection<CheckoutRecord> crs = da.readCheckoutRecordMap().values();
+        List<CheckoutRecord> crsList = new ArrayList<>();
+        crsList.addAll(crs);
+        return null;
+    }
 }

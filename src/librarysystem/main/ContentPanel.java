@@ -6,7 +6,7 @@ import dataaccess.DataAccessFacade;
 import librarysystem.BookMgmtView;
 import librarysystem.LoginScreen;
 import librarysystem.MembersScreen;
-import librarysystem.checkout.CheckoutPanel;
+import librarysystem.checkout.CheckoutPanelForm;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,13 +21,12 @@ public class ContentPanel extends JPanel {
 
         // Create different panels for each screen
         JPanel loginPanel = createPanel("Login Screen", Color.LIGHT_GRAY);
-        JPanel checkoutPanel = createPanel(new CheckoutPanel());
         JPanel memberPanel = createPanel("Member Screen", Color.PINK);
         JPanel helpPanel = createPanel("Help Screen", Color.YELLOW);
 
         // Add the panels to the card layout
         initLoginPanel();
-        add(checkoutPanel, "Checkout");
+        initCheckoutPanel();
         initMemberPanel();
         add(helpPanel, "Help");
         initBookPage();
@@ -38,6 +37,11 @@ public class ContentPanel extends JPanel {
         ControllerInterface controller = new SystemController(dataAccess);
         JPanel loginPanel = new LoginScreen(controller).getPanel();
         add(loginPanel, "Login");
+    }
+
+    private void initCheckoutPanel() {
+        JPanel checkoutPanel = new CheckoutPanelForm();
+        add(checkoutPanel, "Checkout");
     }
 
     private void initMemberPanel() {
@@ -72,7 +76,10 @@ public class ContentPanel extends JPanel {
 
     // Helper method to create a simple panel with a label
     private JPanel createPanel(JPanel panel) {
+//        panel.setBackground(backgroundColor);
         panel.setLayout(new BorderLayout());
+//        JLabel label = new JLabel(, SwingConstants.CENTER);
+//        panel.add(label, BorderLayout.CENTER);
         return panel;
     }
 }
