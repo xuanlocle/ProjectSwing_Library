@@ -1,22 +1,22 @@
 package dataaccess;
+
+import business.*;
+
 import java.io.*;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import business.Author;
-import business.Book;
-import business.LibraryMember;
-
 
 public class DataAccessFacade implements DataAccess {
 	private boolean isTest = false;
 	enum StorageType {
-		BOOKS, MEMBERS, USERS, AUTHOR;
+		BOOKS, MEMBERS, USERS, AUTHOR, RECORDS ;
 	}
 
 	private static String OUTPUT_DIR = System.getProperty("user.dir") + "/src/dataaccess/storage";
@@ -138,6 +138,65 @@ public class DataAccessFacade implements DataAccess {
 		HashMap<String, LibraryMember> members = new HashMap<String, LibraryMember>();
 		memberList.forEach(member -> members.put(member.getMemberId(), member));
 		saveToStorage(StorageType.MEMBERS, members);
+	}
+
+	@Override
+	public boolean isCheckoutAvailable(String memberId, String isbn) {
+		HashMap<String, LibraryMember> mems = readMemberMap();
+		if (!mems.containsKey(memberId)) {
+			//not exists memberId
+			return false;
+		}
+		HashMap<String, Book> books = readBooksMap();
+		if (!books.containsKey(isbn)) {
+			//not exists isbn
+			return false;
+		}
+		Book bookNeedCheckout = books.get(isbn);
+		if (!bookNeedCheckout.isAvailable()) {
+			//none of the copies of book are avaialble
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public void checkoutBook(String memberId, String isbn) {
+		HashMap<String, Book> books = getBooks();
+		Book b = books.get(isbn);
+		BookCopy currentCopy = b.getNextAvailableCopy();
+		HashMap<Integer, CheckoutRecord> records = readCheckoutRecordMap();
+		CheckoutRecord newRecord= new CheckoutRecord(LocalDate.now().plusDays(currentCopy.getBook().getMaxCheckoutLength()),currentCopy);
+		records.put(records.size(), newRecord);
+
+		currentCopy.changeAvailability();
+		b.updateCopies(currentCopy);
+		books.put(isbn, b);
+		saveToStorage(StorageType.RECORDS, records);
+		saveToStorage(StorageType.BOOKS, books);
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public HashMap<Integer, CheckoutRecord> readCheckoutRecordMap() {
+		Object o =  readFromStorage(StorageType.RECORDS);
+		if(o!= null) {
+			return (HashMap<Integer, CheckoutRecord>) o;
+		} else {
+			return new HashMap<>();
+		}
+	}
+
+
+
+	/////load methods - these place test data into the storage area
+	///// - used just once at startup
+
+	static void loadCheckoutRecordMap(List<CheckoutRecord> checkoutRecords) {
+		HashMap<Integer, CheckoutRecord> records = new HashMap<>();
+		checkoutRecords.forEach(cr -> records.put(records.size(), cr));
+		saveToStorage(StorageType.RECORDS, records);
 	}
 
 	static void createFileIfNotExist(String fileName) {
