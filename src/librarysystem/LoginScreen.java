@@ -26,6 +26,7 @@ public class LoginScreen {
                 JOptionPane.showMessageDialog(panel,"Successful Login");
             } catch (LoginException ex) {
                 JOptionPane.showMessageDialog(panel, ex.getMessage());
+            } finally {
                 // Reset password
                 passwordField.setText("");
             }
