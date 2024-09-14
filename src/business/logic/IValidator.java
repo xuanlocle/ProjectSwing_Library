@@ -1,4 +1,6 @@
-package business;
+package business.logic;
+
+import business.exception.ValidatorException;
 
 public interface IValidator {
     public void validateFirstName(String firstName) throws ValidatorException;

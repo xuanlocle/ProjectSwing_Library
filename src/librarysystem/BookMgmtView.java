@@ -2,11 +2,11 @@ package librarysystem;
 
 import business.Author;
 import business.Book;
-import business.ControllerInterface;
-import librarysystem.common.ComboItem;
-import librarysystem.common.ISBNWithHyphenDocumentFilter;
-import librarysystem.common.NumericDocumentFilter;
-import librarysystem.main.TableButtonRender;
+import business.logic.IBook;
+import librarysystem.Component.ComboItem;
+import librarysystem.Component.ISBNWithHyphenDocumentFilter;
+import librarysystem.Component.NumericDocumentFilter;
+import librarysystem.MainWindow.TableButtonRender;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -18,7 +18,7 @@ import static util.Util.isFieldValid;
 import static util.ValidationHelper.isValidISBN;
 
 public class BookMgmtView  implements IAuthorHolderView {
-    ControllerInterface controller;
+    IBook controller;
 
     private JPanel mainPanel;
     private JTextField txtISBN;
@@ -38,7 +38,7 @@ public class BookMgmtView  implements IAuthorHolderView {
     private List<Author> authors = new ArrayList<>();
     private List<Book> books = new ArrayList<>();
 
-    public BookMgmtView(ControllerInterface controller) {
+    public BookMgmtView(IBook controller) {
         this.controller = controller;
 
         ((AbstractDocument) txtISBN.getDocument()).setDocumentFilter(new ISBNWithHyphenDocumentFilter());

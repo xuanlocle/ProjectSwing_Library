@@ -1,6 +1,8 @@
 package test;
 
 import business.*;
+import business.logic.IBook;
+import business.logic.impl.BookService;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessFacade;
 import org.junit.jupiter.api.AfterEach;
@@ -14,12 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BookMgmtTest {
     static DataAccess dataAccess;
-    static ControllerInterface controller;
+    static IBook controller;
 
     @BeforeAll
     static void setup() {
         dataAccess = new DataAccessFacade(true);
-        controller = new SystemController(dataAccess);
+        controller = new BookService(dataAccess);
     }
 
     @AfterEach

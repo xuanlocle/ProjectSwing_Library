@@ -1,28 +1,31 @@
 package test;
 
-import business.*;
+import business.exception.LoginException;
+import business.logic.IUser;
+import business.logic.IUserMgmt;
+import business.logic.impl.UserMgmtService;
+import business.logic.impl.UserService;
+import business.port.IAuthStateListener;
 import dataaccess.Auth;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessFacade;
-import dataaccess.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class LoginTest {
     static DataAccess dataAccess;
-    static ControllerInterface controller;
+    static IUser userService;
+    static IUserMgmt userMgmtService;
 
     @BeforeAll
     static void setup() {
         dataAccess = new DataAccessFacade(true);
-        controller = new SystemController(dataAccess);
+        userService = new UserService(dataAccess);
+        userMgmtService = new UserMgmtService(dataAccess);
     }
 
     @AfterEach
@@ -31,7 +34,7 @@ class LoginTest {
     }
 
     void addUser(String id, String password, Auth auth) {
-        controller.addUser(id, password, auth);
+        userMgmtService.addUser(id, password, auth);
     }
 
     @Test()
@@ -42,12 +45,12 @@ class LoginTest {
         addUser(id, password, Auth.LIBRARIAN);
 
         IAuthStateListener mockListener = mock(IAuthStateListener.class);
-        SystemController.registerAuthStateListener(mockListener);
-        assertThrows(LoginException.class, () -> controller.login(id, incorrectPassword));
+        userService.registerAuthStateListener(mockListener);
+        assertThrows(LoginException.class, () -> userService.login(id, incorrectPassword));
         verify(mockListener, never()).onLogin(Auth.LIBRARIAN);
         verify(mockListener, never()).onLogout();
 
-        SystemController.deregisterAuthStateListener(mockListener);
+        userService.deregisterAuthStateListener(mockListener);
     }
 
     @Test()
@@ -57,12 +60,12 @@ class LoginTest {
         addUser(id, password, Auth.LIBRARIAN);
 
         IAuthStateListener mockListener = mock(IAuthStateListener.class);
-        SystemController.registerAuthStateListener(mockListener);
-        assertDoesNotThrow(() -> controller.login(id, password));
+        userService.registerAuthStateListener(mockListener);
+        assertDoesNotThrow(() -> userService.login(id, password));
         verify(mockListener).onLogin(Auth.LIBRARIAN);
         verify(mockListener, never()).onLogout();
 
-        SystemController.deregisterAuthStateListener(mockListener);
+        userService.deregisterAuthStateListener(mockListener);
     }
 
     @Test()
@@ -72,14 +75,14 @@ class LoginTest {
         addUser(id, password, Auth.LIBRARIAN);
 
         IAuthStateListener mockListener = mock(IAuthStateListener.class);
-        SystemController.registerAuthStateListener(mockListener);
-        assertDoesNotThrow(() -> controller.login(id, password));
+        userService.registerAuthStateListener(mockListener);
+        assertDoesNotThrow(() -> userService.login(id, password));
         verify(mockListener).onLogin(Auth.LIBRARIAN);
         verify(mockListener, never()).onLogout();
 
-        controller.logout();
+        userService.logout();
         verify(mockListener).onLogout();
 
-        SystemController.deregisterAuthStateListener(mockListener);
+        userService.deregisterAuthStateListener(mockListener);
     }
 }

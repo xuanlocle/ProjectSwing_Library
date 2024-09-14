@@ -1,7 +1,7 @@
-package librarysystem.main;
+package librarysystem.MainWindow;
 
-import business.IAuthStateListener;
-import business.SystemController;
+import business.port.IAuthStateListener;
+import business.logic.IUser;
 import dataaccess.Auth;
 
 import javax.swing.*;
@@ -13,8 +13,9 @@ public class MenuPanel extends JPanel implements IAuthStateListener {
     private JButton btnBook;
     private JButton btnCheckout;
     private JButton btnMember;
+    private IUser service;
 
-    public MenuPanel() {
+    public MenuPanel(IUser service) {
         this.setLayout(new GridLayout(4, 1)); // 5 buttons in a column layout
 
         btnLogin = new JButton("Login");
@@ -25,7 +26,7 @@ public class MenuPanel extends JPanel implements IAuthStateListener {
 
         initMenu();
 
-        SystemController.registerAuthStateListener(this);
+        service.registerAuthStateListener(this);
     }
 
     private void initMenu() {

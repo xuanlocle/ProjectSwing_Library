@@ -2,8 +2,8 @@ package librarysystem;
 
 import business.Address;
 import business.Author;
-import business.ControllerInterface;
-import librarysystem.common.NumericDocumentFilter;
+import business.logic.IBook;
+import librarysystem.Component.NumericDocumentFilter;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -15,7 +15,7 @@ import java.util.List;
 import static util.Util.isFieldValid;
 
 public class AddAuthorDialog extends JDialog {
-    ControllerInterface controller;
+    IBook controller;
 
     private JPanel contentPane;
     private JButton buttonOK;
@@ -37,7 +37,7 @@ public class AddAuthorDialog extends JDialog {
     private final String[] AUTHOR_COLUMNS = {"First Name", "Last Name", "Short Bio"};
     List<Author> authors;
 
-    public AddAuthorDialog(IAuthorHolderView mainWindow, ControllerInterface controller) {
+    public AddAuthorDialog(IAuthorHolderView mainWindow, IBook controller) {
         this.main = mainWindow;
         this.controller = controller;
 

@@ -1,6 +1,8 @@
-package business;
+package business.logic.impl;
 
-import java.util.regex.Matcher;
+import business.exception.ValidatorException;
+import business.logic.IValidator;
+
 import java.util.regex.Pattern;
 
 public class Validator implements IValidator {

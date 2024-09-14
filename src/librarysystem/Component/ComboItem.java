@@ -1,4 +1,4 @@
-package librarysystem.common;
+package librarysystem.Component;
 
 public class ComboItem {
     private String key;

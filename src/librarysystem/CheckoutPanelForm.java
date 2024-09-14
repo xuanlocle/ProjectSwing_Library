@@ -1,8 +1,8 @@
 package librarysystem;
 
 import business.CheckoutEntry;
-import business.ControllerInterface;
-import business.ICheckoutView;
+import business.port.ICheckoutView;
+import business.logic.ICheckout;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 
 public class CheckoutPanelForm implements ICheckoutView {
-    private final ControllerInterface controller;
+    private final ICheckout controller;
 
     private JTable table1;
     private JTextField txtMemberId;
@@ -22,7 +22,7 @@ public class CheckoutPanelForm implements ICheckoutView {
     private JLabel lblCheckoutRecord;
     private final String[] columnNames = {"Copy Number", "ISBN", "Title", "Checkout Date", "Due Date"};
 
-    public CheckoutPanelForm(ControllerInterface controller) {
+    public CheckoutPanelForm(ICheckout controller) {
         this.controller = controller;
 
         // Create a table with 4 columns

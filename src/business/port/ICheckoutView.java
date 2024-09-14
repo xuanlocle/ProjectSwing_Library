@@ -1,4 +1,6 @@
-package business;
+package business.port;
+
+import business.CheckoutEntry;
 
 import java.util.HashMap;
 

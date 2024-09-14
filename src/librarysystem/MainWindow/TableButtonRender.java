@@ -1,4 +1,4 @@
-package librarysystem.main;
+package librarysystem.MainWindow;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
