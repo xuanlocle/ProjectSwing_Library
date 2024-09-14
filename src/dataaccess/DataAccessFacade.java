@@ -17,7 +17,7 @@ public class DataAccessFacade implements DataAccess {
 		BOOKS, MEMBERS, USERS, AUTHOR;
 	}
 
-	private static String OUTPUT_DIR = System.getProperty("user.dir") + "/src/dataaccess/storage";
+	private static String OUTPUT_DIR = System.getProperty("user.dir") + "/storage";
 
 	public DataAccessFacade() {
 
@@ -26,7 +26,7 @@ public class DataAccessFacade implements DataAccess {
 	public DataAccessFacade(boolean isTest) {
 		if (isTest) {
 			this.isTest = true;
-			OUTPUT_DIR = System.getProperty("user.dir") + "/src/dataaccess/test_storage";
+			OUTPUT_DIR = System.getProperty("user.dir") + "/test_storage";
 		}
 	}
 
