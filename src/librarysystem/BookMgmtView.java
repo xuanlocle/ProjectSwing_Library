@@ -6,6 +6,7 @@ import business.logic.IBook;
 import librarysystem.Component.ComboItem;
 import librarysystem.Component.ISBNWithHyphenDocumentFilter;
 import librarysystem.Component.NumericDocumentFilter;
+import librarysystem.Interface.IAuthorHolderView;
 import librarysystem.MainWindow.TableButtonRender;
 
 import javax.swing.*;

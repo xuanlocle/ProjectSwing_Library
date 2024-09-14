@@ -4,6 +4,7 @@ import business.Address;
 import business.Author;
 import business.logic.IBook;
 import librarysystem.Component.NumericDocumentFilter;
+import librarysystem.Interface.IAuthorHolderView;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
