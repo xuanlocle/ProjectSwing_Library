@@ -1,12 +1,11 @@
 package test;
 
-import business.ControllerInterface;
-import business.SystemController;
-import business.ValidatorException;
+import business.logic.IUserMgmt;
+import business.exception.ValidatorException;
+import business.logic.impl.UserMgmtService;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessFacade;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,12 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MemberControllerTest {
     DataAccess dataAccess;
-    ControllerInterface controller;
+    IUserMgmt controller;
 
     @BeforeEach
     void setup() {
         dataAccess = new DataAccessFacade(true);
-        controller = new SystemController(dataAccess);
+        controller = new UserMgmtService(dataAccess);
     }
 
     @AfterEach

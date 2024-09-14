@@ -1,4 +1,4 @@
-package librarysystem.common;
+package librarysystem.Component;
 
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;

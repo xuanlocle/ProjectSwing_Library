@@ -1,8 +1,7 @@
 package librarysystem;
 
-import business.ControllerInterface;
-import business.LoginException;
-import business.SystemController;
+import business.exception.LoginException;
+import business.logic.IUser;
 
 import javax.swing.*;
 
@@ -12,17 +11,16 @@ public class LoginScreen {
     private JTextField IDTextField;
     private JButton loginButton;
     private JPasswordField passwordField;
-    private ControllerInterface controller;
+    private IUser controller;
 
-    public LoginScreen(ControllerInterface controller) {
+    public LoginScreen(IUser controller) {
         this.controller = controller;
 
         this.loginButton.addActionListener(e -> {
             String ID = IDTextField.getText();
             String password = passwordField.getText();
-            SystemController sc = new SystemController();
             try {
-                sc.login(ID, password);
+                this.controller.login(ID, password);
             } catch (LoginException ex) {
                 JOptionPane.showMessageDialog(panel, ex.getMessage());
             } finally {

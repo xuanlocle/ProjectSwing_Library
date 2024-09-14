@@ -1,13 +1,13 @@
 package librarysystem;
 
-import business.ControllerInterface;
-import business.IValidator;
+import business.logic.IUserMgmt;
+import business.logic.IValidator;
 
 import javax.swing.*;
 import java.awt.event.*;
 
 public class AddLibraryMemberDialog extends JDialog {
-    private ControllerInterface controller;
+    private IUserMgmt controller;
     private IValidator validator;
 
     private JPanel contentPane;
@@ -22,7 +22,7 @@ public class AddLibraryMemberDialog extends JDialog {
     private JTextField zipTextField;
     private JTextArea errorMessagesTextArea;
 
-    public AddLibraryMemberDialog(ControllerInterface controller, IValidator validator) {
+    public AddLibraryMemberDialog(IUserMgmt controller, IValidator validator) {
         this.controller = controller;
         this.validator = validator;
         setContentPane(contentPane);

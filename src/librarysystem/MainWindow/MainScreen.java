@@ -1,19 +1,19 @@
-package librarysystem.main;
+package librarysystem.MainWindow;
+
+import librarysystem.Main;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainScreen extends JFrame {
-
     private static MenuPanel menuPanel;
     private static ContentPanel rightPanel;
-
 
     public MainScreen() {
         setTitle("Library System");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1024, 700);
-        menuPanel = new MenuPanel();
+        menuPanel = new MenuPanel(Main.userService);
 
         rightPanel = new ContentPanel();
         rightPanel.setBackground(Color.WHITE); // Default color for the right panel

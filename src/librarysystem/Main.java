@@ -1,10 +1,13 @@
 package librarysystem;
 
-import business.ControllerInterface;
-import business.SystemController;
+import business.logic.*;
+import business.logic.impl.BookService;
+import business.logic.impl.CheckoutService;
+import business.logic.impl.UserMgmtService;
+import business.logic.impl.UserService;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessFacade;
-import librarysystem.main.MainScreen;
+import librarysystem.MainWindow.MainScreen;
 
 import javax.swing.*;
 import java.awt.Component;
@@ -14,7 +17,10 @@ import static util.ValidationHelper.getResourceDir;
 
 public class Main {
     public static final DataAccess dataAccess = new DataAccessFacade();
-    public static final ControllerInterface controller = new SystemController(dataAccess);
+    public static final IBook bookService = new BookService(dataAccess);
+    public static final ICheckout checkoutService = new CheckoutService(dataAccess);
+    public static final IUser userService = new UserService(dataAccess);
+    public static final IUserMgmt userMgmtService = new UserMgmtService(dataAccess);
 
     private static void setWindowsStyle() {
         try {

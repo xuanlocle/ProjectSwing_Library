@@ -1,6 +1,7 @@
 package dataaccess;
 
 import business.*;
+import business.exception.CheckoutException;
 
 import java.io.*;
 import java.nio.file.FileSystems;

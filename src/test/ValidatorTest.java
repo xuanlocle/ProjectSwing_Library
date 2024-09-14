@@ -1,8 +1,8 @@
 package test;
 
-import business.IValidator;
-import business.Validator;
-import business.ValidatorException;
+import business.logic.IValidator;
+import business.logic.impl.Validator;
+import business.exception.ValidatorException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;

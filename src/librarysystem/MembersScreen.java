@@ -1,6 +1,9 @@
 package librarysystem;
 
 import business.*;
+import business.logic.IUserMgmt;
+import business.logic.IValidator;
+import business.logic.impl.Validator;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -15,11 +18,11 @@ public class MembersScreen {
     private JButton searchButton;
     private JButton addNewMemberButton;
     private JTable membersTable;
-    private ControllerInterface controller;
+    private IUserMgmt controller;
     private final String[] MEMBER_COLUMNS = {"Member ID", "First Name", "Last Name", "Phone", "Address"};
     private List<LibraryMember> memberList = new ArrayList<>();
 
-    public MembersScreen(ControllerInterface controller) {
+    public MembersScreen(IUserMgmt controller) {
         this.controller = controller;
         initMembersTable();
         searchButton.addActionListener(new ActionListener() {

@@ -1,4 +1,4 @@
-package librarysystem.main;
+package librarysystem.MainWindow;
 import librarysystem.*;
 import librarysystem.CheckoutPanelForm;
 
@@ -27,27 +27,27 @@ public class ContentPanel extends JPanel {
     }
 
     private void initHomePanel() {
-        homePanel = new HomeScreen(Main.controller).getPanel();
+        homePanel = new HomeScreen(Main.userService).getPanel();
         add(homePanel, "Home");
     }
 
     private void initLoginPanel() {
-        loginPanel = new LoginScreen(Main.controller).getPanel();
+        loginPanel = new LoginScreen(Main.userService).getPanel();
         add(loginPanel, "Login");
     }
 
     private void initCheckoutPanel() {
-        checkoutPanel = new CheckoutPanelForm(Main.controller).getPanel();
+        checkoutPanel = new CheckoutPanelForm(Main.checkoutService).getPanel();
         add(checkoutPanel, "Checkout");
     }
 
     private void initMemberPanel() {
-        memberPanel = new MembersScreen(Main.controller).getPanel();
+        memberPanel = new MembersScreen(Main.userMgmtService).getPanel();
         add(memberPanel, "Member");
     }
 
     private void initBookPage() {
-        bookPanel = new BookMgmtView(Main.controller);
+        bookPanel = new BookMgmtView(Main.bookService);
         add(bookPanel.getMainPanel(), "ManageBook");
     }
 

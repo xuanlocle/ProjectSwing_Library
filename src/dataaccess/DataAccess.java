@@ -3,6 +3,7 @@ package dataaccess;
 import java.util.HashMap;
 
 import business.*;
+import business.exception.CheckoutException;
 
 public interface DataAccess { 
 	HashMap<String,Book> readBooksMap();
