@@ -20,7 +20,7 @@ public class CheckoutPanelForm implements ICheckoutView {
     private JPanel checkoutPanel;
 
     private JLabel lblCheckoutRecord;
-    private final String[] columnNames = {"No.", "ISBN", "Title", "Checkout Date", "Due Date"};
+    private final String[] columnNames = {"Copy Number", "ISBN", "Title", "Checkout Date", "Due Date"};
 
     public CheckoutPanelForm(ControllerInterface controller) {
         this.controller = controller;
@@ -91,7 +91,7 @@ public class CheckoutPanelForm implements ICheckoutView {
         for (int i = 0; i < cr.size(); i++) {
             CheckoutEntry record = cr.get(i);
             Object[] row = record.toRowData();
-            row[0] = i + 1;
+            row[0] = record.getBookCopy().getCopyNum();
             tableModel.addRow(row);
         }
 
